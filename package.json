@@ -1,0 +1,23 @@
+{
+  "name": "calendar-api-server",
+  "version": "1.0.0",
+  "description": "The Server API to share calendar data with the public.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Official-Codaisseur-Graduate/calendar-api-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Official-Codaisseur-Graduate/calendar-api-server/issues"
+  },
+  "homepage": "https://github.com/Official-Codaisseur-Graduate/calendar-api-server#readme",
+  "dependencies": {
+    "googleapis": "^43.0.0"
+  }
+}
