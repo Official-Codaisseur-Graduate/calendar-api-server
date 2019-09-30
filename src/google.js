@@ -11,15 +11,24 @@ const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 // The file token.json stores the user"s access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = "token.json"
-const CREDENTIALS_PATH = "credentials.json"
+const { CREDENTIALS_PATH, TOKEN_PATH } = require("./settings.js")
 
-// Load client secrets from a local file.
-fs.readFile(CREDENTIALS_PATH, (err, content) => {
-  if (err) return console.log("Error loading client secret file:", err)
-  // Authorize a client with credentials, then call the Google Calendar API.
-  authorize(JSON.parse(content), listEvents)
-})
+
+
+
+const loadCredentials = () =>
+  new Promise((resolve, reject) => {
+    fs.readFile(CREDENTIALS_PATH, (error, credentials) => {
+      if (error) reject(error)
+      else resolve(JSON.parse(credentials))
+    })
+  })
+
+
+
+
+
+
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -97,3 +106,6 @@ function listEvents(auth) {
     }
   })
 }
+
+
+module.exports = { loadCredentials }
