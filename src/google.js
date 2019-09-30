@@ -13,9 +13,6 @@ const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 // time.
 const { CREDENTIALS_PATH, TOKEN_PATH } = require("./settings.js")
 
-
-
-
 const loadCredentials = () =>
   new Promise((resolve, reject) => {
     fs.readFile(CREDENTIALS_PATH, (error, credentials) => {
@@ -24,6 +21,33 @@ const loadCredentials = () =>
     })
   })
 
+const loadToken = () =>
+  new Promise((resolve, reject) => {
+    fs.readFile(TOKEN_PATH, (error, token) => {
+      if (error) reject(error)
+      else resolve(JSON.parse(token))
+    })
+  })
+
+const createOAuth2Client = (credentials, token) =>
+  new Promise((resolve, reject) => {
+    const oAuth2Client = new google.auth.OAuth2(
+      credentials.installed.client_id,
+      credentials.installed.client_secret,
+      credentials.installed.redirect_uris[0])
+    oAuth2Client.setCredentials(token)
+    return oAuth2Client
+  })
+
+
+
+// Check if we have previously stored a token.
+fs.readFile(TOKEN_PATH, (err, token) => {
+  if (err) return getAccessToken(oAuth2Client, callback)
+  oAuth2Client.setCredentials(JSON.parse(token))
+  callback(oAuth2Client)
+})
+}
 
 
 
@@ -108,4 +132,4 @@ function listEvents(auth) {
 }
 
 
-module.exports = { loadCredentials }
+module.exports = { loadCredentials, loadToken }
