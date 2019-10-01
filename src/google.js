@@ -2,11 +2,17 @@ const { google } = require("googleapis")
 
 const oAuth2Client = require("./oAuth2Client")
 
+let client = undefined
+oAuth2Client()
+  .then(result => client = result)
+  .catch(console.error)
+
 // Load the events from the calendar
-const loadEvents = () =>
-  new Promise((resolve, reject) => {
+const loadEvents = async () =>
+  new Promise(async (resolve, reject) => {
+
     const calendar = google.calendar({
-      auth: oAuth2Client,
+      auth: client,
       version: "v3",
     })
 

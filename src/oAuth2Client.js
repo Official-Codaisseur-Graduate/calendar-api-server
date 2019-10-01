@@ -4,80 +4,82 @@ const readline = require("readline")  // For local file manipulation.
 
 const { CREDENTIALS_PATH, TOKEN_PATH, SCOPES } = require("./settings.js")
 
-const oAuth2Client = async () => {
+const oAuth2Client = () =>
+  new Promise(async (resolve, reject) => {
 
-  let credentials = undefined
-  try {
-    credentials = await loadJsonFile(CREDENTIALS_PATH)
-  } catch (error) {
-    console.error("An error occurred while trying to load the " +
-      "credentials from a Json file:", error)
-    return
-  }
-
-  let client = undefined
-  try {
-    client = createOAuth2Client(credentials)
-  } catch (error) {
-    console.error("An error occurred while trying to create the " +
-      "Google API client:", error)
-    return
-  }
-
-  let token = undefined
-  try {
-    token = await loadJsonFile(TOKEN_PATH)
-  } catch (error) {
-    console.error("An error occurred while trying to load the " +
-      "token from a Json file:", error)
-    console.log("Generating a new token to continue...")
-
+    let credentials = undefined
     try {
-      const authURL = getAuthUrl(client, SCOPES)
-      console.log("Please visit the following site to generate " +
-        "an authorization code:\n", authURL)
+      credentials = await loadJsonFile(CREDENTIALS_PATH)
     } catch (error) {
-      console.error("An error occurred while trying to get the " +
-        "authorization URL:", error)
-      return
+      console.error("An error occurred while trying to load the " +
+        "credentials from a Json file:", error)
+      reject(error)
     }
 
-    let authCode = undefined
+    let client = undefined
     try {
-      authCode = await askAuthCode("Enter the authorization code: ")
+      client = await createOAuth2Client(credentials)
     } catch (error) {
-      console.error("An error occurred while asking the user " +
-        "for the authorization code:", error)
-      return
+      console.error("An error occurred while trying to create the " +
+        "Google API client:", error)
+      reject(error)
+    }
+
+    let token = undefined
+    try {
+      token = await loadJsonFile(TOKEN_PATH)
+    } catch (error) {
+      console.error("An error occurred while trying to load the " +
+        "token from a Json file:", error)
+      console.log("Generating a new token to continue...")
+
+      try {
+        const authURL = await getAuthUrl(client, SCOPES)
+        console.log("Please visit the following site to generate " +
+          "an authorization code:\n", authURL)
+      } catch (error) {
+        console.error("An error occurred while trying to get the " +
+          "authorization URL:", error)
+        reject(error)
+      }
+
+      let authCode = undefined
+      try {
+        authCode = await askAuthCode("Enter the authorization code: ")
+      } catch (error) {
+        console.error("An error occurred while asking the user " +
+          "for the authorization code:", error)
+        reject(error)
+      }
+
+      try {
+        token = await generateToken(client, authCode)
+      } catch (error) {
+        console.error("An error occurred while generating the " +
+          "token:", error)
+        reject(error)
+      }
+
+      try {
+        await writeJsonFile(TOKEN_PATH, token)
+      } catch (error) {
+        console.error("An error occurred while writing the " +
+          "token to a Json file:", error)
+        console.log("Writing the token is not critical for " +
+          "the functionality of this program. Continuing...")
+      }
     }
 
     try {
-      token = await generateToken(client, authCode)
+      await addTokenToClient(client, token)
     } catch (error) {
-      console.error("An error occurred while generating the " +
-        "token:", error)
-      return
+      console.error("An error occurred while trying to add the " +
+        "token to the Google API client:", error)
+      reject(error)
     }
-
-    try {
-      await writeJsonFile(TOKEN_PATH, token)
-    } catch (error) {
-      console.error("An error occurred while writing the " +
-        "token to a Json file:", error)
-      console.log("Writing the token is not critical for " +
-        "the functionality of this program. Continuing...")
-    }
-  }
-
-  try {
-    addTokenToClient(client, token)
-  } catch (error) {
-    console.error("An error occurred while trying to add the " +
-      "token to the Google API client:", error)
-    return
-  }
-  return client
-}
+    // console.log("Client in generator:", client)
+    resolve(client)
+  })
 
 // Load data from a Json file
 const loadJsonFile = fileName =>
