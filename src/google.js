@@ -1,128 +1,186 @@
-// Contacting the Google API for Calendars.
 const { google } = require("googleapis")
+const fs = require("fs")              // For local file manipulation.
+const readline = require("readline")  // For local file manipulation.
 
-// fs and readline are used to write files to disk and read files from disk.
-// Perhaps these should eventually be replaced by other methods?
-const fs = require("fs")
-const readline = require("readline")
+const { CREDENTIALS_PATH, TOKEN_PATH, SCOPES } = require("./settings.js")
 
-// If modifying these scopes, delete token.json.
-const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-// The file token.json stores the user"s access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
-const { CREDENTIALS_PATH, TOKEN_PATH } = require("./settings.js")
+const initializeCalendar = async () => {
 
-const loadCredentials = () =>
-  new Promise((resolve, reject) => {
-    fs.readFile(CREDENTIALS_PATH, (error, credentials) => {
-      if (error) reject(error)
-      else resolve(JSON.parse(credentials))
-    })
-  })
+  console.log("Loading the credentials from a Json file.")
+  let credentials = undefined
+  try {
+    credentials = await loadJsonFile(CREDENTIALS_PATH)
+    console.log("Credentials:", credentials)
+  } catch (error) {
+    console.error("An error occurred while trying to load the " +
+      "credentials from a Json file:", error)
+    return
+  }
 
-const loadToken = () =>
-  new Promise((resolve, reject) => {
-    fs.readFile(TOKEN_PATH, (error, token) => {
-      if (error) reject(error)
-      else resolve(JSON.parse(token))
-    })
-  })
+  console.log("Creating the Google API client.")
+  let client = undefined
+  try {
+    client = createOAuth2Client(credentials)
+  } catch (error) {
+    console.error("An error occurred while trying to create the " +
+      "Google API client:", error)
+    return
+  }
 
-const createOAuth2Client = (credentials, token) =>
-  new Promise((resolve, reject) => {
-    const oAuth2Client = new google.auth.OAuth2(
-      credentials.installed.client_id,
-      credentials.installed.client_secret,
-      credentials.installed.redirect_uris[0])
-    oAuth2Client.setCredentials(token)
-    return oAuth2Client
-  })
+  console.log("Loading the token from a Json file.")
+  let token = undefined
+  try {
+    token = await loadJsonFile(TOKEN_PATH)
+    console.log("Token:", token)
+  } catch (error) {
+    console.error("An error occurred while trying to load the " +
+      "token from a Json file:", error)
+    console.log("Because the token could not be loaded, a new " +
+      "token will be generated.")
 
-
-
-
-
-
-
-
-
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
-function authorize(credentials, callback) {
-  const { client_secret, client_id, redirect_uris } = credentials.installed
-  const oAuth2Client = new google.auth.OAuth2(
-    client_id, client_secret, redirect_uris[0])
-
-  // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback)
-    oAuth2Client.setCredentials(JSON.parse(token))
-    callback(oAuth2Client)
-  })
-}
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getAccessToken(oAuth2Client, callback) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES,
-  })
-  console.log("Authorize this app by visiting this url:", authUrl)
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  })
-  rl.question("Enter the code from that page here: ", (code) => {
-    rl.close()
-    oAuth2Client.getToken(code, (err, token) => {
-      if (err) return console.error("Error retrieving access token", err)
-      oAuth2Client.setCredentials(token)
-      // Store the token to disk for later program executions
-      fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-        if (err) return console.error(err)
-        console.log("Token stored to", TOKEN_PATH)
-      })
-      callback(oAuth2Client)
-    })
-  })
-}
-
-/**
- * Lists the next 10 events on the user"s primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-function listEvents(auth) {
-  const calendar = google.calendar({ version: "v3", auth })
-  calendar.events.list({
-    calendarId: "primary",
-    timeMin: (new Date()).toISOString(),
-    maxResults: 10,
-    singleEvents: true,
-    orderBy: "startTime",
-  }, (err, res) => {
-    if (err) return console.log("The API returned an error: " + err)
-    const events = res.data.items
-    if (events.length) {
-      console.log("Upcoming 10 events:")
-      events.map((event, i) => {
-        const start = event.start.dateTime || event.start.date
-        console.log(`${start} - ${event.summary}`)
-      })
-    } else {
-      console.log("No upcoming events found.")
+    console.log("Getting the authorization URL.")
+    let authURL = undefined
+    try {
+      authURL = getAuthUrl(client, SCOPES)
+      console.log("Please visit the following site to generate " +
+        "an authorization code:\n", authURL)
+    } catch (error) {
+      console.error("An error occurred while trying to get the " +
+        "authorization URL:", error)
+      return
     }
-  })
+
+    console.log("Asking the user for the authorization code.")
+    let authCode = undefined
+    try {
+      authCode = await askAuthCode("Enter the authorization code: ")
+      console.log("Authorization code:", authCode)
+    } catch (error) {
+      console.error("An error occurred while asking the user " +
+        "for the authorization code:", error)
+      return
+    }
+
+    console.log("Generating the token.")
+    try {
+      token = await generateToken(client, authCode)
+      console.log("Token:", token)
+    } catch (error) {
+      console.error("An error occurred while generating the " +
+        "token:", error)
+      return
+    }
+
+    console.log("Writing the token to a Json file.")
+    try {
+      await writeJsonFile(TOKEN_PATH, token)
+    } catch (error) {
+      console.error("An error occurred while writing the " +
+        "token to a Json file:", error)
+      console.log("Because this is not a critical step, the " +
+        "application will continue to run.")
+    }
+  }
+
+  console.log("Adding the token to the Google API client.")
+  try {
+    addTokenToClient(client, token)
+  } catch (error) {
+    console.error("An error occurred while trying to add the " +
+      "token to the Google API client:", error)
+    return
+  }
+
+  console.log("Google client:", client)
+
+  console.log("Loading the upcoming events.")
+  try {
+    const calendarData = await loadEvents(client)
+    return calendarData
+  } catch (error) {
+    console.error("An error occurred while trying to get the " +
+      "upcoming events:", error)
+  }
 }
 
+// Load data from a Json file
+const loadJsonFile = fileName =>
+  new Promise((resolve, reject) => {
+    fs.readFile(fileName, (error, data) => {
+      if (error) reject(error)
+      else resolve(JSON.parse(data))
+    })
+  })
 
-module.exports = { loadCredentials, loadToken }
+// Write data to a Json file
+const writeJsonFile = (fileName, data) =>
+  new Promise((resolve, reject) => {
+    fs.writeFile(fileName, JSON.stringify(data), error => {
+      if (error) reject(error)
+      else resolve(true)
+    })
+  })
+
+// Create a Google API client using the credentials
+const createOAuth2Client = credentials =>
+  new google.auth.OAuth2(
+    credentials.installed.client_id,
+    credentials.installed.client_secret,
+    credentials.installed.redirect_uris[0])
+
+// Generate the Url required to retrieve the code to generate the token
+const getAuthUrl = (oAuth2Client, scope) =>
+  oAuth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope,
+  })
+
+// Ask for the authorization code in the terminal
+const askAuthCode = question =>
+  new Promise((resolve, reject) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    })
+    rl.question(question, authCode => {
+      if (authCode.trim()) resolve(authCode.trim())
+      else reject(false)
+    })
+  })
+
+// Generate the token using the authorization code
+const generateToken = (oAuth2Client, authCode) =>
+  new Promise((resolve, reject) => {
+    oAuth2Client.getToken(authCode, (error, token) => {
+      if (error) reject(error)
+      else resolve(token)
+    })
+  })
+
+// Add the token to the Google API client
+const addTokenToClient = (oAuth2Client, token) =>
+  oAuth2Client.setCredentials(token)
+
+// Load the events from the calendar
+const loadEvents = oAuth2Client =>
+  new Promise((resolve, reject) => {
+    const calendar = google.calendar({
+      auth: oAuth2Client,
+      version: "v3",
+    })
+
+    calendar.events.list({
+      calendarId: "primary",
+      timeMin: (new Date()).toISOString(),
+      maxResults: 10,
+      singleEvents: true,
+      orderBy: "startTime",
+    }, (error, result) => {
+      if (error) reject(error)
+      else resolve(result)
+    })
+  })
+
+module.exports = {
+  initializeCalendar,
+}
