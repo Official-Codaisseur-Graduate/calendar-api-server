@@ -14,3 +14,11 @@ The restructured code is found in src/google.js
 Note that the functionality of each piece of code has not yet changed.
 Credentials and tokens are still read from and written to json files.
 Also, if a new token needs to be generated, the console is required.
+
+
+
+The functionality has been split in two:
+- The Google API client is generated once when the backend is started.
+- This one client is used to fetch the data for each request.
+- The code for generating the Google API client has been moved to
+  oAuth2Client.js
