@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = new Router()
-const { initializeCalendar } = require("./google")
+const { initializeCalendar } = require("../google")
 
 
 router.get(

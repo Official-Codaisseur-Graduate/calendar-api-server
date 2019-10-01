@@ -12,8 +12,8 @@ const jsonParser = bodyParser.json()
 app.use(corsMiddleware)
 app.use(jsonParser)
 
-const eventsRouter = require('./router')
-app.use(eventsRouter)
+const calendarRouter = require('./calendar')
+app.use(calendarRouter)
 
 app.get('/test', (req, res) => res.send('Hello test!'))
 app.listen(port, () => console.log(`Listening to port ${port}`))
