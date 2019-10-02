@@ -21,4 +21,6 @@ The functionality has been split in two:
 - The Google API client is generated once when the backend is started.
 - This one client is used to fetch the data for each request.
 - The code for generating the Google API client has been moved to
-  oAuth2Client.js
+  src/oAuth2Client.js
+- The code to request data from and post data to the calendar has
+  been moved to src/calendar/calendarApi.js
