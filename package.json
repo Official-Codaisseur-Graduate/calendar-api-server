@@ -19,11 +19,12 @@
   },
   "homepage": "https://github.com/Official-Codaisseur-Graduate/calendar-api-server#readme",
   "dependencies": {
-    "body-parser": "",
-    "cors": "",
-    "express": "",
-    "googleapis": "",
-    "pg": "",
-    "sequelize": ""
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "googleapis": "^43.0.0",
+    "pg": "^7.12.1",
+    "sequelize": "^5.19.2"
   }
 }
