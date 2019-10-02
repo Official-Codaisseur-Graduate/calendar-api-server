@@ -16,6 +16,4 @@ app.use(
 )
 
 const port = process.env.PORT || 4000
-app.listen(port)
-  .then(() => console.log(`Listening to :${port}`))
-  .catch(console.error)
+app.listen(port, () => console.log(`Listening to :${port}`))

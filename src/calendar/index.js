@@ -3,10 +3,6 @@ const { Router } = require("express")
 const { loadEvents } = require("./calendarApi")
 
 const router = new Router()
-<<<<<<< HEAD
-=======
-const { loadEvents } = require("../google")
->>>>>>> feat/user
 
 router.get("/events/:year/:month/:day", (req, res, next) => {
   const startDate = new Date(

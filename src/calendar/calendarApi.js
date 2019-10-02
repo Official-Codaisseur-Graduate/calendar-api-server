@@ -1,13 +1,5 @@
 const { google } = require("googleapis")
 
-// const oAuth2Client = require("../client")
-
-// let client = undefined
-// oAuth2Client()
-//   .then(result => client = result)
-//   .catch(console.error)
-
-
 const privatekey = require("../../privatekey.json")
 
 const jwtClient = new google.auth.JWT(
@@ -24,12 +16,6 @@ const calendar = google.calendar({
   auth: jwtClient,
   version: "v3",
 })
-
-calendar.calendarList.list()
-  .then(result => console.log(result.data))
-  .catch(console.error)
-
-
 
 // Load the events from the calendar
 const loadEvents = async (startDate, endDate) =>
