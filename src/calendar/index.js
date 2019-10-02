@@ -19,10 +19,14 @@ router.get("/events/:year/:month/:day", (req, res, next) => {
       const events = data.data.items
       res.send(events.map(event => {
         return {
-          summary: event.summary,
-          description: event.description,
-          start: event.start.dateTime,
-          end: event.end.dateTime
+          // As a temporary solution, return all event data.
+          ...event
+
+          // Once the frontend is more formalized, return specific data.
+          // summary: event.summary,
+          // description: event.description,
+          // start: event.start.dateTime,
+          // end: event.end.dateTime
         }
       }))
     })
