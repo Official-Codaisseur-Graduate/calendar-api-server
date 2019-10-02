@@ -2,18 +2,17 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const calendarRouter = require('./calendar')
-app.use(calendarRouter)
-
 const corsMiddleware = cors()
 const jsonParser = bodyParser.json()
 const port = process.env.PORT || 4000
+
+const calendarRouter = require('./calendar')
 
 const app = express()
 app.use(
   corsMiddleware,
   jsonParser,
-  eventsRouter,
+  calendarRouter
 )
 
 app.get('/test', (req, res) => res.send('Hello test!'))
