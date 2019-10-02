@@ -1,6 +1,6 @@
 const { google } = require("googleapis")
 
-const oAuth2Client = require("../oAuth2Client")
+const oAuth2Client = require("../client")
 
 let client = undefined
 oAuth2Client()

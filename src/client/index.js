@@ -2,7 +2,7 @@ const { google } = require("googleapis")
 const fs = require("fs")              // For local file manipulation.
 const readline = require("readline")  // For local file manipulation.
 
-const { CREDENTIALS_PATH, TOKEN_PATH, SCOPES } = require("./settings.js")
+const { CREDENTIALS_PATH, TOKEN_PATH, SCOPES } = require("../settings.js")
 
 const oAuth2Client = () =>
   new Promise(async (resolve, reject) => {

@@ -12,7 +12,16 @@ const User = sequelize.define(
     type: Sequelize.STRING,
     allowNull: false
   },
-}, 
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  rank: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
+  validation: Sequelize.STRING,
+},
 {
   timestamps: false,
   tableName: 'users'
