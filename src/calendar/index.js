@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = new Router()
-const { loadEvents } = require("./google")
+const { loadEvents } = require("../google")
 
 
 router.get(

@@ -15,13 +15,26 @@ router.get(                                             //GET ALL
 
 router.post(                                             //CREATE
   '/user', (req, res, next) => {
-  const user = {
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 10),
-    name: req.body.name,
-    rank: req.body, rank,
-    validation: req.body.validation
-  }
+    const email = req.body.email
+    const password = req.body.password
+    const user = {
+      email: req.body.email,
+      password: bcrypt.hashSync(req.body.password, 10),
+      name: req.body.name,
+      rank: req.body.rank,
+      validation: req.body.validation
+    }
+  if(!email || !password) {
+    res.status(400).send({ message: 'Please enter a valid email and password' })
+  }else{
+    User
+    .findOne({ where: { email: req.body.email }})
+    .then(entity => {
+      if (!entity) { 
+        res.status(400).send({ message: 'User with that email does not exist' })
+      }
+    })
+  }  
   User
   .create(user)
   .then(newUser =>res.json(newUser))
@@ -37,6 +50,5 @@ router.get(                                               //GET ONE USER
       .catch(err => next(err))
   }
 )
-
 
 module.exports = router

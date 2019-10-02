@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
-const sequelize = require('../db')
+const db = require('../db')
 
-const User = sequelize.define(
+const User = db.define(
   'user', 
   {
   email: {
