@@ -1,6 +1,6 @@
 const { google } = require("googleapis")
 
-const oAuth2Client = require("./oAuth2Client")
+const oAuth2Client = require("../oAuth2Client")
 
 let client = undefined
 oAuth2Client()
@@ -8,7 +8,7 @@ oAuth2Client()
   .catch(console.error)
 
 // Load the events from the calendar
-const loadEvents = async () =>
+const loadEvents = async (startDate, endDate) =>
   new Promise(async (resolve, reject) => {
 
     const calendar = google.calendar({
@@ -18,8 +18,8 @@ const loadEvents = async () =>
 
     calendar.events.list({
       calendarId: "primary",
-      timeMin: (new Date()).toISOString(),
-      maxResults: 10,
+      timeMin: startDate.toISOString(),
+      timeMax: endDate.toISOString(),
       singleEvents: true,
       orderBy: "startTime",
     }, (error, result) => {

@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const eventsRouter = require('./router')
+const calendarRouter = require('./calendar')
 
 const corsMiddleware = cors()
 const jsonParser = bodyParser.json()
@@ -12,7 +12,7 @@ const app = express()
 app.use(
   corsMiddleware,
   jsonParser,
-  eventsRouter,
+  calendarRouter,
 )
 
 app.get('/test', (req, res) => res.send('Hello test!'))
