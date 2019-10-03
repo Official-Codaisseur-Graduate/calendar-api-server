@@ -6,15 +6,19 @@ const corsMiddleware = cors()
 const jsonParser = bodyParser.json()
 const port = process.env.PORT || 4000
 
+const login = require('./auth/router')
+
 const calendarRouter = require('./calendar')
 const userRouter = require('./user/index')
 
 const app = express()
+
 app.use(
   corsMiddleware,
   jsonParser,
   calendarRouter,
-  userRouter
+  userRouter,
+  login
 )
 
 app.get('/test', (req, res) => res.send('Hello test!'))
