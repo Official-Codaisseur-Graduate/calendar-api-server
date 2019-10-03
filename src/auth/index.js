@@ -19,7 +19,7 @@ router.get("/validation", validate, async (req, res) => {
 
     if (!req.user.password) {
       return res.send({
-        vaidationType: "register",
+        validationType: "register",
         user: {
           id: req.user.id,
           email: req.user.email,
@@ -33,7 +33,7 @@ router.get("/validation", validate, async (req, res) => {
 
     if (!req.user.newEmail) {
       return res.send({
-        vaidationType: "resetPassword",
+        validationType: "resetPassword",
         user: {
           id: req.user.id,
           email: req.user.email,
@@ -62,7 +62,7 @@ router.get("/validation", validate, async (req, res) => {
     }
 
     return res.send({
-      vaidationType: "changeEmail",
+      validationType: "changeEmail",
       user: {
         id: req.user.id,
         email: req.user.email,
