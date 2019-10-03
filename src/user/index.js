@@ -2,6 +2,7 @@ const { Router } = require('express')
 const router = new Router()
 const User = require('./model')
 const bcrypt = require('bcrypt')
+const nodemailer = require('nodemailer')
 
 router.get(                                             //GET ALL
   '/user',

@@ -3,8 +3,14 @@ const sequelize = require("../database")
 
 const Model = sequelize.define("configuration",
   {
-    key: Sequelize.STRING,
-    data: Sequelize.STRING(4096),
+    key: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    data: {
+      type: Sequelize.STRING(4096),
+    },
   },
   {
     tableName: "configuration",
