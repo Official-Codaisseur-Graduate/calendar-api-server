@@ -3,7 +3,7 @@ const User = require("../user/model")
 const validate = async (req, res, next) => {
   try {
 
-    if (!checkString(req.headers.validation)) {
+    if (!req.headers.validation) {
       return res.status(400).send({
         message: "Validation code required.",
         user: {},

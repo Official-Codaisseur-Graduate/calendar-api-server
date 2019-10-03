@@ -21,9 +21,9 @@ router.get("/validation", validate, async (req, res) => {
       return res.send({
         vaidationType: "register",
         user: {
-          id: user.id,
-          email: user.email,
-          rank: user.rank,
+          id: req.user.id,
+          email: req.user.email,
+          rank: req.user.rank,
         },
       })
     }
@@ -35,10 +35,10 @@ router.get("/validation", validate, async (req, res) => {
       return res.send({
         vaidationType: "resetPassword",
         user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          rank: user.rank,
+          id: req.user.id,
+          email: req.user.email,
+          name: req.user.name,
+          rank: req.user.rank,
         },
       })
     }
@@ -125,7 +125,7 @@ router.post("/register", async (req, res) => {
   }
 })
 
-router.post("/registervalidation", async (req, res) => {
+router.post("/registervalidation", validate, async (req, res) => {
   try {
 
     if (!checkString(req.body.password, 8)) {
@@ -135,7 +135,7 @@ router.post("/registervalidation", async (req, res) => {
       })
     }
 
-    if (req.body.password === user.email) {
+    if (req.body.password === req.user.email) {
       return res.status(400).send({
         message: "'password' cannot be identical to email address.",
       })
@@ -158,11 +158,11 @@ router.post("/registervalidation", async (req, res) => {
     return res.status(400).send({
       message: "User account registered.",
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        rank: user.rank,
-        jwt: toJWT({ userId: user.id }),
+        id: req.user.id,
+        email: req.user.email,
+        name: req.user.name,
+        rank: req.user.rank,
+        jwt: toJWT({ userId: req.user.id }),
       },
     })
 
@@ -247,7 +247,7 @@ router.post("/login", async (req, res) => {
       })
     }
 
-    const password = await bcrypt
+    const comparePassword = await bcrypt
       .compareSync(req.body.password, user.password)
     if (!comparePassword) {
       return res.status(400).send({
