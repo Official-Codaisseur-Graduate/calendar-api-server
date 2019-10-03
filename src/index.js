@@ -1,19 +1,19 @@
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const express = require("express")
+const cors = require("cors")
+const bodyParser = require("body-parser")
 
-const calendarRouter = require('./calendar')
-
-const corsMiddleware = cors()
-const jsonParser = bodyParser.json()
-const port = process.env.PORT || 4000
+const userRouter = require("./user")
+const calendarRouter = require("./calendar")
+const configRouter = require("./config")
 
 const app = express()
 app.use(
-  corsMiddleware,
-  jsonParser,
+  cors(),
+  bodyParser.json(),
+  userRouter,
   calendarRouter,
+  configRouter,
 )
 
-app.get('/test', (req, res) => res.send('Hello test!'))
-app.listen(port, () => console.log(`Listening to port ${port}`))
+const port = process.env.PORT || 4000
+app.listen(port, () => console.log(`Listening to :${port}`))
