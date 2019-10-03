@@ -25,6 +25,7 @@ const Model = database.define("user",
     },
     validation: {
       type: Sequelize.STRING,
+      unique: true,
     },
   },
   {

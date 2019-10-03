@@ -11,7 +11,7 @@ const auth = async (req, res, next) => {
       authorization[0] !== "Bearer" ||
       !authorization[1]) {
       return res.status(401).send({
-        message: "Authorization token required.",
+        message: "Incorrect URL or authorization token required.",
         user: {},
       })
     }
