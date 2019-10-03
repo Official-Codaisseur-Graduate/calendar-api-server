@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:3000"
+const baseUrl = process.env.BASEURL || "http://localhost:3000"
 
 const sendEmail = async (email, title, body) => {
   console.log("I'm being asked to send the following email,",
