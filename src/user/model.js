@@ -1,30 +1,36 @@
-const Sequelize = require('sequelize')
-const db = require('../database')
+const Sequelize = require("sequelize")
 
-const User = db.define(
-  'user',
+const database = require("../database")
+
+const Model = database.define("user",
   {
     email: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true,
     },
     password: {
       type: Sequelize.STRING,
-      allowNull: false
     },
     name: {
       type: Sequelize.STRING,
-      allowNull: false
     },
     rank: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0,
     },
-    validation: Sequelize.STRING,
+    newEmail: {
+      type: Sequelize.STRING,
+    },
+    validation: {
+      type: Sequelize.STRING,
+    },
   },
   {
+    tableName: "users",
     timestamps: false,
-    tableName: 'users'
-  })
+  },
+)
 
-module.exports = User
+module.exports = Model

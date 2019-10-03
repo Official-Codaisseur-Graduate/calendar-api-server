@@ -1,10 +1,10 @@
-const express = require("express")
+const { Router } = require("express")
 
 const Config = require("./model")
 const { checkEmail, checkString } = require("../checkData")
 const { resetClient } = require("../calendar/middleware")
 
-const router = new express.Router()
+const router = new Router()
 
 router.post("/googleapi", async (req, res) => {
   try {

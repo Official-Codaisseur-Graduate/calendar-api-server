@@ -1,48 +1,59 @@
-const { Router } = require('express')
-const { toJWT, toData } = require('./jwt')
+const { Router } = require("express")
+const bcrypt = require("bcrypt")
+
+const User = require("../user/model")
+const { toJWT } = require("./jwt")
+const { checkEmail, checkString } = require("../checkData")
+
 const router = new Router()
-const bcrypt = require('bcryptjs')
-const User = require('../user/model')
 
-router.post(
-  '/login', 
-  (req, res) => {
-    const email = req.body.email
-    const password = req.body.password
+router.post("/login", (req, res) => {
+  try {
 
-    if(!email || !password) {
-      res.status(400).send({
-        message: 'Please enter a valid email and password'
+    if (!checkEmail(req.body.email)) {
+      return res.status(400).send({
+        message: "'email' must be an email address.",
       })
-    }else {
-      
-      User
-      .findOne({ where: { 
-        email: req.body.email 
-        } 
-      })
-      .then(entity => {
-        if (!entity) { 
-          res.status(400).send({ 
-            message: 'User with that email does not exist' 
-      }) 
     }
-    if (bcrypt.compareSync(req.body.password, entity.password)) {
-      res.send({ 
-        jwt: toJWT({ userId: entity.id }),
-        userId: entity.id 
+
+    if (!checkString(req.body.password, 8)) {
+      return res.status(400).send({
+        message: "'password' must be a password with at least " +
+          "8 characters.",
       })
-    }else {
-        res.status(400).send({ 
-          message: 'Password was incorrect' 
-        })
-      }
+    }
+
+    const user = await User.findOne({
+      where: { email: req.body.email },
     })
-    .catch(err => {
-      console.error(err)
-      res.status(500).send({ 
-        message: 'Something went wrong' 
+    if (!user) {
+      return res.status(400).send({
+        message: "Email address not found or password incorrect."
       })
+    }
+
+    const password = await bcrypt
+      .compareSync(req.body.password, user.password)
+    if (!comparePassword) {
+      return res.status(400).send({
+        message: "Email address not found or password incorrect."
+      })
+    }
+
+    return res.send({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        rank: user.rank,
+        jwt: toJWT({ userId: user.id }),
+      },
+    })
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error.",
     })
   }
 })
