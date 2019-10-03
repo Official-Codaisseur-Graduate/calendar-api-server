@@ -5,7 +5,7 @@ const databaseUrl = process.env.DATABASE_URL ||
 const database = new Sequelize(databaseUrl)
 
 database.sync({ force: false })
-  .then(console.log("Connected to Database"))
+  .then(() => console.log("Connected to Database"))
   .catch(console.error)
 
 module.exports = database

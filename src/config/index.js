@@ -2,6 +2,7 @@ const express = require("express")
 
 const Config = require("./model")
 const { checkEmail, checkString } = require("../checkData")
+const { resetClient } = require("../calendar/middleware")
 
 const router = new express.Router()
 
@@ -28,6 +29,8 @@ router.post("/googleapi", async (req, res) => {
           "for the service account.",
       })
     }
+
+    resetClient()
 
     const client_email_entry = await Config.findOne({
       where: { key: "client_email" }

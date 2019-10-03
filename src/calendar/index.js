@@ -1,32 +1,54 @@
 const { Router } = require("express")
 
-const { loadEvents } = require("./calendarApi")
+const { getCalendar, getCalendarId } = require("./middleware")
 
 const router = new Router()
 
-router.get("/events/:year/:month/:day", (req, res, next) => {
-  const startDate = new Date(
-    parseInt(req.params.year),
-    parseInt(req.params.month) - 1,
-    parseInt(req.params.day),
-    0, 0, 0, 0 // Set time of day to start of day.
-  )
-  const endDate = new Date(startDate)
-  endDate.setDate(endDate.getDate() + 1)
+router.get("/events/:year/:month/:day",
+  getCalendar, getCalendarId, (req, res) => {
+    try {
 
-  loadEvents(startDate, endDate)
-    .then(data => {
-      const events = data.data.items
-      res.send(events.map(event => {
-        return {
-          summary: event.summary,
-          description: event.description,
-          start: event.start.dateTime,
-          end: event.end.dateTime
+      const startDate = new Date(
+        parseInt(req.params.year),
+        parseInt(req.params.month) - 1,
+        parseInt(req.params.day),
+        0, 0, 0, 0 // Set time of day to start of day.
+      )
+      const endDate = new Date(startDate)
+      endDate.setDate(endDate.getDate() + 1)
+
+      req.calendar.events.list(
+        {
+          calendarId: req.calendarId,
+          timeMin: startDate.toISOString(),
+          timeMax: endDate.toISOString(),
+          singleEvents: true,
+          orderBy: "startTime",
+        },
+
+        (error, result) => {
+          if (error) {
+            console.error(error)
+            return res.status(500).send({
+              message: "Internal server error."
+            })
+          }
+
+          res.send(result.data.items.map(event => ({
+            ...event
+            // summary: event.summary,
+            // description: event.description,
+            // start: event.start.dateTime,
+            // end: event.end.dateTime
+          })))
         }
-      }))
-    })
-    .catch(err => next(err))
-})
+      )
+
+    } catch (error) {
+      console.error("An error occurred while trying to load " +
+        "the event data:\n", error)
+      reject("Internal server error")
+    }
+  })
 
 module.exports = router
