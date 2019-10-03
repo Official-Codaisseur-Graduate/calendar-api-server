@@ -1,30 +1,37 @@
-const User = require('../user/model')
-const { toData } = require('./jwt')
+const User = require("../user/model")
+const { toData } = require("./jwt")
 
-function auth(req, res, next) {
-  const auth = req.headers.authorization && req.headers.authorization.split(' ')
-  if (auth && auth[0] === 'Bearer' && auth[1]) {
-    try {
-      const data = toData(auth[1])
-      User
-        .findByPk(data.userId)
-        .then(user => {
-          if (!user) return next('User does not exist')
+const auth = async (req, res, next) => {
+  try {
+    const authorization = req.headers.authorization &&
+      typeof req.headers.authorization === "string" &&
+      req.headers.authorization.split(" ")
 
-          req.user = user
-          next()
-        })
-        .catch(next)
-    }
-    catch(error) {
-      res.status(400).send({
-        message: `Error ${error.name}: ${error.message}`,
+    if (!authorization ||
+      authorization[0] !== "Bearer" ||
+      !authorization[1]) {
+      return res.status(401).send({
+        message: "Authorization token required.",
+        user: {},
       })
     }
-  }
-  else {
-    res.status(401).send({
-      message: 'Please supply some valid credentials'
+
+    const data = toData(authorization[1])
+    const user = data && await User.findByPk(data.userId)
+    if (!user) {
+      return res.status(401).send({
+        message: "Authorization token invalid or expired.",
+        user: {},
+      })
+    }
+
+    req.user = user
+    next()
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error."
     })
   }
 }

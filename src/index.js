@@ -2,20 +2,21 @@ const express = require("express")
 const cors = require("cors")
 const bodyParser = require("body-parser")
 
+const authRouter = require("./auth")
+const authMiddleware = require("./auth/middleware")
 const userRouter = require("./user")
 const configRouter = require("./config")
 const calendarRouter = require("./calendar")
-const login = require('./auth/router')
 
 const app = express()
 app.use(
   cors(),
   bodyParser.json(),
+  authRouter,
+  authMiddleware,
   userRouter,
-  calendarRouter,
   configRouter,
-  userRouter,
-  login
+  calendarRouter,
 )
 
 const port = process.env.PORT || 4000
