@@ -2,6 +2,7 @@ const { Router } = require("express")
 const bcrypt = require("bcrypt")
 
 const User = require("../user/model")
+const validate = require("./validate")
 const { toJWT } = require("./jwt")
 const { checkEmail, checkString } = require("../checkData")
 const randomCode = require("../randomCode")
@@ -10,30 +11,13 @@ const { sendRegisterEmail, alreadyRegisteredEmail } =
 
 const router = new Router()
 
-router.get("/validation", async (req, res) => {
+router.get("/validation", validate, async (req, res) => {
   try {
-
-    if (!checkString(req.headers.validation)) {
-      return res.status(400).send({
-        message: "'validation' must be a validation code string.",
-        user: {},
-      })
-    }
-
-    const user = await User.findOne({
-      where: { validation: req.headers.validation },
-    })
-    if (!user) {
-      return res.status(400).send({
-        message: "Validation code not found.",
-        user: {},
-      })
-    }
 
     // If the user does not have a password set for their account,
     // then the user must still be in the registration process.
 
-    if (!user.password) {
+    if (!req.user.password) {
       return res.send({
         vaidationType: "register",
         user: {
@@ -47,7 +31,7 @@ router.get("/validation", async (req, res) => {
     // If the user does not have a newEmail set for their account,
     // then the user must be resetting their password.
 
-    if (!user.newEmail) {
+    if (!req.user.newEmail) {
       return res.send({
         vaidationType: "resetPassword",
         user: {
@@ -64,7 +48,7 @@ router.get("/validation", async (req, res) => {
     // Check if someone already uses that new email address.
 
     const checkUser = await User.findOne({
-      where: { email: user.newEmail },
+      where: { email: req.user.newEmail },
     })
     if (checkUser) {
       user.update({
@@ -80,11 +64,11 @@ router.get("/validation", async (req, res) => {
     return res.send({
       vaidationType: "changeEmail",
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        rank: user.rank,
-        newEmail: user.newEmail,
+        id: req.user.id,
+        email: req.user.email,
+        name: req.user.name,
+        rank: req.user.rank,
+        newEmail: req.user.newEmail,
       },
     })
 
@@ -144,55 +128,42 @@ router.post("/register", async (req, res) => {
 router.post("/registervalidation", async (req, res) => {
   try {
 
-    if (!checkString(req.headers.validation)) {
-      return res.status(401).send({
-        message: "'validation' must be a validation code string.",
-        user: {},
-      })
-    }
-
-    const user = await User.findOne({
-      where: { validation: req.headers.validation },
-    })
-    if (!user) {
-      return res.status(401).send({
-        message: "Validation code not found.",
-        user: {},
-      })
-    }
-
-    if (!checkString(req.body.password, 8, 250)) {
+    if (!checkString(req.body.password, 8)) {
       return res.status(400).send({
-        message: "'password' must be an email address.",
+        message: "'password' must be a password with at least " +
+          "8 characters.",
       })
     }
 
-    let user = await User.findOne({
-      where: { email: req.body.email },
+    if (req.body.password === user.email) {
+      return res.status(400).send({
+        message: "'password' cannot be identical to email address.",
+      })
+    }
+
+    if (!checkString(req.body.name, 2, 40)) {
+      return res.status(400).send({
+        message: "'name' must be a string with at at least " +
+          "2 and at most 40 characters.",
+      })
+    }
+
+    const encryptedPassword = await bcrypt
+      .hashSync(req.body.password, 10)
+    req.user.update({
+      password: encryptedPassword,
+      name: req.body.name,
+      validation: null,
     })
-    if (!user) {
-      user = await User.create({
-        email: req.body.email,
-        validation: randomCode(),
-      })
-    }
-
-    // If the user does not have a password set for their account,
-    // then the user must still be in the registration process.
-
-    if (!user.password) {
-      await sendRegisterEmail(user.email, user.validation)
-    } else {
-      await alreadyRegisteredEmail(user.email)
-    }
-
-    // Always return the following "verification email sent" message, 
-    // regardless whether the email is already found in the database,
-    // So users cannot go fish for which emails do or do not exist.
-    // The actual email that was sent above informs the user.
-
-    return res.send({
-      message: "Verification email sent. Check your email to continue.",
+    return res.status(400).send({
+      message: "User account registered.",
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        rank: user.rank,
+        jwt: toJWT({ userId: user.id }),
+      },
     })
 
   } catch (error) {

@@ -2,24 +2,20 @@ const User = require("../user/model")
 
 const validate = async (req, res, next) => {
   try {
-    const authorization = req.headers.authorization &&
-      typeof req.headers.authorization === "string" &&
-      req.headers.authorization.split(" ")
 
-    if (!authorization ||
-      authorization[0] !== "Bearer" ||
-      !authorization[1]) {
-      return res.status(401).send({
-        message: "Incorrect URL or authorization token required.",
+    if (!checkString(req.headers.validation)) {
+      return res.status(400).send({
+        message: "Validation code required.",
         user: {},
       })
     }
 
-    const data = toData(authorization[1])
-    const user = data && await User.findByPk(data.userId)
+    const user = await User.findOne({
+      where: { validation: req.headers.validation },
+    })
     if (!user) {
-      return res.status(401).send({
-        message: "Authorization token invalid or expired.",
+      return res.status(400).send({
+        message: "Validation code invalid or expired.",
         user: {},
       })
     }
