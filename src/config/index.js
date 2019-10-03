@@ -52,11 +52,11 @@ router.post("/googleapi", async (req, res) => {
     if (!private_key_entry) {
       await Config.create({
         key: "private_key",
-        data: req.body.private_key,
+        data: req.body.private_key.replace(/\\n/g, "\n"),
       })
     } else {
       await private_key_entry.update({
-        data: req.body.private_key,
+        data: req.body.private_key.replace(/\\n/g, "\n"),
       })
     }
 
