@@ -144,9 +144,26 @@ router.post("/register", async (req, res) => {
 router.post("/registervalidation", async (req, res) => {
   try {
 
-    if (!checkString(req.body.email)) {
+    if (!checkString(req.headers.validation)) {
+      return res.status(401).send({
+        message: "'validation' must be a validation code string.",
+        user: {},
+      })
+    }
+
+    const user = await User.findOne({
+      where: { validation: req.headers.validation },
+    })
+    if (!user) {
+      return res.status(401).send({
+        message: "Validation code not found.",
+        user: {},
+      })
+    }
+
+    if (!checkString(req.body.password, 8, 250)) {
       return res.status(400).send({
-        message: "'email' must be an email address.",
+        message: "'password' must be an email address.",
       })
     }
 
