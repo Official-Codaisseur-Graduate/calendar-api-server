@@ -1,4 +1,5 @@
 const { Router } = require("express")
+const Sequelize = require("sequelize")
 
 const User = require("./model")
 const { checkInteger } = require("../checkData")
@@ -10,7 +11,7 @@ router.get("/users", async (req, res) => {
 
     const users = await User.findAll({
       attributes: ["id", "email", "name", "rank"],
-      where: { password: { [Op.ne]: null } },
+      where: { password: { [Sequelize.Op.ne]: null } },
     })
     return res.send({
       users,
@@ -27,7 +28,7 @@ router.get("/users", async (req, res) => {
 router.put("/userrank/:id", async (req, res) => {
   try {
 
-    if (!checkInteger(parseInt(req.params.id), 1)) {
+    if (!checkInteger(parseFloat(req.params.id), 1)) {
       return res.status(400).send({
         message: "User ID must be a positive round number.",
       })
@@ -39,13 +40,13 @@ router.put("/userrank/:id", async (req, res) => {
       })
     }
 
-    if (!checkInteger(parseInt(req.body.rank), 0, 4)) {
+    if (!checkInteger(parseFloat(req.body.rank), 0, 4)) {
       return res.status(400).send({
         message: "'rank' must be a round number between 0 and 4.",
       })
     }
 
-    const user = await User.findByPk({ id: parseInt(req.params.id) })
+    const user = await User.findByPk(parseInt(req.params.id))
     if (!user || !user.password) {
       return res.status(404).send({
         message: "User ID not found.",
@@ -57,10 +58,10 @@ router.put("/userrank/:id", async (req, res) => {
     })
     return res.send({
       updateUser: {
-        id=user.id,
-        email=user.email,
-        name=user.name,
-        rank=user.rank,
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        rank: user.rank,
       },
     })
 
