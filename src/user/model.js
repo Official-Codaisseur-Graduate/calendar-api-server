@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize")
 
-const database = require("../database")
+const { database } = require("../database")
 
 const Model = database.define("user",
   {

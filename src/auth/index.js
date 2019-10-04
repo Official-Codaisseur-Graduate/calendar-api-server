@@ -1,5 +1,5 @@
 const { Router } = require("express")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 
 const User = require("../user/model")
 const validate = require("./validate")
@@ -8,6 +8,7 @@ const { checkEmail, checkString } = require("../checkData")
 const randomCode = require("../randomCode")
 const { sendRegisterEmail, alreadyRegisteredEmail } =
   require("../sendEmail")
+const { superAdmin } = require("./superAdmin")
 
 const router = new Router()
 
@@ -222,13 +223,13 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
 
-    if (!checkEmail(req.body.email)) {
+    if (!checkString(req.body.email)) {
       return res.status(400).send({
         message: "'email' must be an email address.",
       })
     }
 
-    if (!checkString(req.body.password, 8)) {
+    if (!checkString(req.body.password)) {
       return res.status(400).send({
         message: "'password' must be a password with at least " +
           "8 characters.",
@@ -252,6 +253,14 @@ router.post("/login", async (req, res) => {
     if (!comparePassword) {
       return res.status(400).send({
         message: "Email address not found or password incorrect."
+      })
+    }
+
+    // If this is the Super Admin, force rank to 4.
+
+    if (user.email === superAdmin && user.rank < 4) {
+      await user.update({
+        rank: 4,
       })
     }
 
