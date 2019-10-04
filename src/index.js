@@ -8,6 +8,7 @@ const userRouter = require("./user")
 const configRouter = require("./config")
 const calendarRouter = require("./calendar")
 const { databaseSync } = require("./database")
+const { checkSuperAdmin } = require("./auth/superAdmin")
 
 const app = express()
 app.use(
@@ -23,4 +24,4 @@ app.use(
 const port = process.env.PORT || 4000
 app.listen(port, () => console.log(`Listening to :${port}`))
 
-databaseSync()
+databaseSync().then(checkSuperAdmin)
