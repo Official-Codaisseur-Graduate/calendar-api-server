@@ -225,14 +225,15 @@ router.post("/login", async (req, res) => {
 
     if (!checkString(req.body.email)) {
       return res.status(400).send({
-        message: "'email' must be an email address.",
+        message: "'email' must be the email address of the " +
+          "user that is logging in.",
       })
     }
 
     if (!checkString(req.body.password)) {
       return res.status(400).send({
-        message: "'password' must be a password with at least " +
-          "8 characters.",
+        message: "'password' must be a valid password for the " +
+          "user that is logging in.",
       })
     }
 
@@ -244,7 +245,7 @@ router.post("/login", async (req, res) => {
     })
     if (!user) {
       return res.status(400).send({
-        message: "Email address not found or password incorrect."
+        message: "Email address not found or password incorrect.",
       })
     }
 
@@ -252,7 +253,7 @@ router.post("/login", async (req, res) => {
       .compareSync(req.body.password, user.password)
     if (!comparePassword) {
       return res.status(400).send({
-        message: "Email address not found or password incorrect."
+        message: "Email address not found or password incorrect.",
       })
     }
 
