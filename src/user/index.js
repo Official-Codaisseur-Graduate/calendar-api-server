@@ -1,55 +1,75 @@
-const { Router } = require('express')
+const { Router } = require("express")
+
+const User = require("./model")
+const { checkInteger } = require("../checkData")
+
 const router = new Router()
-const User = require('./model')
-const bcrypt = require('bcrypt')
-const nodemailer = require('nodemailer')
 
-router.get(                                             //GET ALL
-  '/user',
-  (req, res, next) => {
-    User
-      .findAll()
-      .then(user => res.json(user))
-      .catch(err => next(err))
+router.get("/users", async (req, res) => {
+  try {
+
+    const users = await User.findAll({
+      attributes: ["id", "email", "name", "rank"],
+      where: { password: { [Op.ne]: null } },
+    })
+    return res.send({
+      users,
+    })
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error.",
+    })
   }
-)
+})
 
-router.post(                                             //CREATE
-  '/user', (req, res, next) => {
-    const email = req.body.email
-    const password = req.body.password
-    const user = {
-      email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 10),
-      name: req.body.name,
-      rank: req.body.rank,
-      validation: req.body.validation
-    }
-    if (!email || !password) {
-      res.status(400).send({ message: 'Please enter a valid email and password' })
-    } else {
-      User
-        .findOne({ where: { email: req.body.email } })
-        .then(entity => {
-          if (!entity) {
-            res.status(400).send({ message: 'User with that email does not exist' })
-          }
-        })
-    }
-    User
-      .create(user)
-      .then(newUser => res.json(newUser))
-      .catch(err => next(err))
-  })
+router.put("/userrank/:id", async (req, res) => {
+  try {
 
-router.get(                                               //GET ONE USER
-  '/user/:id',
-  (req, res, next) => {
-    User
-      .findByPk(req.params.id)
-      .then(user => res.json(user))
-      .catch(err => next(err))
+    if (!checkInteger(parseInt(req.params.id), 1)) {
+      return res.status(400).send({
+        message: "User ID must be a positive round number.",
+      })
+    }
+
+    if (req.user.id === parseInt(req.params.id)) {
+      return res.status(400).send({
+        message: "You cannot adjust your own user rank.",
+      })
+    }
+
+    if (!checkInteger(parseInt(req.body.rank), 0, 4)) {
+      return res.status(400).send({
+        message: "'rank' must be a round number between 0 and 4.",
+      })
+    }
+
+    const user = await User.findByPk({ id: parseInt(req.params.id) })
+    if (!user || !user.password) {
+      return res.status(404).send({
+        message: "User ID not found.",
+      })
+    }
+
+    user.update({
+      rank: parseInt(req.body.rank),
+    })
+    return res.send({
+      updateUser: {
+        id=user.id,
+        email=user.email,
+        name=user.name,
+        rank=user.rank,
+      },
+    })
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error.",
+    })
   }
-)
+})
 
 module.exports = router

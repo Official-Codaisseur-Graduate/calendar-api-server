@@ -47,7 +47,7 @@ const sendRegisterEmail = async (email, code) => {
   await sendEmail(email, title, bodyText, bodyHtml)
 }
 
-const AlreadyRegisteredEmail = async (email) => {
+const alreadyRegisteredEmail = async (email) => {
   const title = `Codaisseur Calendar account registration.`
   const body = `Hello,\n\n` +
     `An attempt was made to register a new account with ` +
@@ -60,5 +60,5 @@ const AlreadyRegisteredEmail = async (email) => {
 
 module.exports = {
   sendRegisterEmail,
-  AlreadyRegisteredEmail,
+  alreadyRegisteredEmail,
 }
