@@ -15,9 +15,12 @@ const checkEmail = email => {
   }
 }
 
-const checkInteger = integer => {
+// minValue and maxValue are optional parameters.
+const checkInteger = (integer, minValue, maxValue) => {
   try {
-    return Number.isInteger(integer) && integer > 0
+    return Number.isInteger(integer) &&
+      (!minValue || integer >= minValue) &&
+      (!maxValue || integer <= maxValue)
   } catch (error) {
     return false
   }
