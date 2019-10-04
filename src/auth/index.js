@@ -258,7 +258,7 @@ router.post("/login", async (req, res) => {
 
     // If this is the Super Admin, force rank to 4.
 
-    if (user.email === superAdmin) {
+    if (user.email === superAdmin && user.rank < 4) {
       await user.update({
         rank: 4,
       })
