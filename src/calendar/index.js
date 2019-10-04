@@ -1,8 +1,62 @@
 const { Router } = require("express")
 
+const Config = require("../config/model")
 const { getCalendar, getCalendarId } = require("./middleware")
 
 const router = new Router()
+
+router.get("/calendars", getCalendar, async (req, res) => {
+  try {
+
+    if (req.user.rank < 4) {
+      return res.status(403).send({
+        message: "Only admin users can see all calendar IDs.",
+      })
+    }
+
+    const calendar_id_entry = await Config.findOne({
+      where: { key: "calendar_id" }
+    })
+
+    req.calendar.calendarList.list(
+      {
+        showDeleted: true,
+        showHidden: true,
+      },
+
+      (error, result) => {
+        if (error) {
+          console.error(error)
+          return res.status(500).send({
+            message: "Internal server error."
+          })
+        }
+
+        res.send({
+          events: result.data.items.map(calendar => {
+            if (calendar.id === calendar_id_entry.data) {
+              return {
+                id: calendar.id,
+                summary: calendar.summary,
+                selected: true,
+              }
+            }
+            return {
+              id: calendar.id,
+              summary: calendar.summary,
+            }
+          })
+        })
+      }
+    )
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error.",
+    })
+  }
+})
 
 router.get("/events/:year/:month/:day",
   getCalendar, getCalendarId, (req, res) => {
@@ -40,20 +94,23 @@ router.get("/events/:year/:month/:day",
             })
           }
 
-          res.send(result.data.items.map(event => ({
-            ...event
-            // summary: event.summary,
-            // description: event.description,
-            // start: event.start.dateTime,
-            // end: event.end.dateTime
-          })))
+          res.send({
+            events: result.data.items.map(event => ({
+              ...event
+              // summary: event.summary,
+              // description: event.description,
+              // start: event.start.dateTime,
+              // end: event.end.dateTime
+            }))
+          })
         }
       )
 
     } catch (error) {
-      console.error("An error occurred while trying to load " +
-        "the event data:\n", error)
-      reject("Internal server error")
+      console.error(error)
+      return res.status(500).send({
+        message: "Internal server error.",
+      })
     }
   })
 
