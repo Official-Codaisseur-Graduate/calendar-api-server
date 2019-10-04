@@ -9,6 +9,12 @@ const router = new Router()
 router.post("/googleapi", async (req, res) => {
   try {
 
+    if (req.user.rank < 4) {
+      return res.status(403).send({
+        message: "Only admin users can set configuration.",
+      })
+    }
+
     if (!checkString(req.body.password)) {
       return res.status(400).send({
         message: "'password' must be a valid password for the " +
@@ -74,6 +80,12 @@ router.post("/googleapi", async (req, res) => {
 
 router.post("/calendar", async (req, res) => {
   try {
+
+    if (req.user.rank < 4) {
+      return res.status(403).send({
+        message: "Only admin users can set configuration.",
+      })
+    }
 
     if (!checkString(req.body.password)) {
       return res.status(400).send({

@@ -9,6 +9,12 @@ const router = new Router()
 router.get("/users", async (req, res) => {
   try {
 
+    if (req.user.rank < 3) {
+      return res.status(403).send({
+        message: "Only admin users and teacher users can see users.",
+      })
+    }
+
     const users = await User.findAll({
       attributes: ["id", "email", "name", "rank"],
       where: { password: { [Sequelize.Op.ne]: null } },
@@ -28,6 +34,13 @@ router.get("/users", async (req, res) => {
 router.put("/userrank/:id", async (req, res) => {
   try {
 
+    if (req.user.rank < 3) {
+      return res.status(403).send({
+        message: "Only admin users and teacher users can set " +
+          "user ranks.",
+      })
+    }
+
     if (!checkInteger(parseFloat(req.params.id), 1)) {
       return res.status(400).send({
         message: "User ID must be a positive round number.",
@@ -35,7 +48,7 @@ router.put("/userrank/:id", async (req, res) => {
     }
 
     if (req.user.id === parseInt(req.params.id)) {
-      return res.status(400).send({
+      return res.status(403).send({
         message: "You cannot adjust your own user rank.",
       })
     }
@@ -50,6 +63,20 @@ router.put("/userrank/:id", async (req, res) => {
     if (!user || !user.password) {
       return res.status(404).send({
         message: "User ID not found.",
+      })
+    }
+
+    if (req.user.rank < 4 && parseInt(user.rank) > 2) {
+      return res.status(403).send({
+        message: "Only admin users can change the rank of an " +
+          "admin or a teacher."
+      })
+    }
+
+    if (req.user.rank < 4 && parseInt(req.body.rank) > 2) {
+      return res.status(403).send({
+        message: "Only admin users can set a user's rank to " +
+          "admin or teacher.",
       })
     }
 

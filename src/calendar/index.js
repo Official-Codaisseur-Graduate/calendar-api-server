@@ -8,6 +8,12 @@ router.get("/events/:year/:month/:day",
   getCalendar, getCalendarId, (req, res) => {
     try {
 
+      if (!req.user.rank) {
+        return res.status(403).send({
+          message: "Only authorized users can load calendar data.",
+        })
+      }
+
       const startDate = new Date(
         parseInt(req.params.year),
         parseInt(req.params.month) - 1,
