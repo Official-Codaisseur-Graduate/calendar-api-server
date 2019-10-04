@@ -1,5 +1,5 @@
 const { Router } = require("express")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 
 const User = require("../user/model")
 const validate = require("./validate")
