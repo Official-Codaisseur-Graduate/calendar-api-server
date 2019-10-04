@@ -1,4 +1,5 @@
 const { Router } = require("express")
+const bcrypt = require("bcryptjs")
 
 const Config = require("./model")
 const { checkEmail, checkString } = require("../checkData")
@@ -19,6 +20,14 @@ router.post("/googleapi", async (req, res) => {
       return res.status(400).send({
         message: "'password' must be a valid password for the " +
           "user that is updating the configuration.",
+      })
+    }
+
+    const comparePassword = await bcrypt
+      .compareSync(req.body.password, req.user.password)
+    if (!comparePassword) {
+      return res.status(401).send({
+        message: "Password incorrect.",
       })
     }
 
@@ -91,6 +100,14 @@ router.post("/calendar", async (req, res) => {
       return res.status(400).send({
         message: "'password' must be a valid password for the " +
           "user that is updating the configuration.",
+      })
+    }
+
+    const comparePassword = await bcrypt
+      .compareSync(req.body.password, req.user.password)
+    if (!comparePassword) {
+      return res.status(401).send({
+        message: "Password incorrect.",
       })
     }
 

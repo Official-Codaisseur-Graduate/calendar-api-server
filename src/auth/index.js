@@ -245,7 +245,7 @@ router.post("/login", async (req, res) => {
     })
     if (!user) {
       return res.status(400).send({
-        message: "Email address not found or password incorrect."
+        message: "Email address not found or password incorrect.",
       })
     }
 
@@ -253,7 +253,7 @@ router.post("/login", async (req, res) => {
       .compareSync(req.body.password, user.password)
     if (!comparePassword) {
       return res.status(400).send({
-        message: "Email address not found or password incorrect."
+        message: "Email address not found or password incorrect.",
       })
     }
 
