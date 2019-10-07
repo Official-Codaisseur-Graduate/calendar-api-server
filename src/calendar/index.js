@@ -34,7 +34,8 @@ router.get("/calendars", getCalendar, async (req, res) => {
 
         res.send({
           events: result.data.items.map(calendar => {
-            if (calendar.id === calendar_id_entry.data) {
+            if (calendar_id_entry &&
+              calendar.id === calendar_id_entry.data) {
               return {
                 id: calendar.id,
                 summary: calendar.summary,
