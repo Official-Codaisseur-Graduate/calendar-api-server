@@ -2,14 +2,20 @@ const { google } = require("googleapis")
 
 const Config = require("../config/model")
 
+const scopes = [
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/calendar.readonly",
+]
+
 let jwtClient = undefined
 
 const resetClient = () => {
   jwtClient = undefined
 }
 
-const getCalendar = async (req, res, next) => {
+const getClient = async (req, res, next) => {
   try {
+
     if (!jwtClient ||
       jwtClient.credentials.expiry_date < Date.now() + 10000) {
 
@@ -35,16 +41,47 @@ const getCalendar = async (req, res, next) => {
         client_email_entry.data,
         null,
         private_key_entry.data,
-        ["https://www.googleapis.com/auth/calendar.readonly"],
+        scopes,
       )
 
       await jwtClient.authorize()
         .then(() => console.log("Connected to Google API"))
     }
 
-    req.calendar = google.calendar({
-      auth: jwtClient,
+    req.jwtClient = jwtClient
+    next()
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error."
+    })
+  }
+}
+
+const getEmailSender = async (req, res, next) => {
+  try {
+
+    req.emailSender = google.users.messages.send({
+      auth: req.jwtClient,
       version: "v3",
+    })
+    next()
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error."
+    })
+  }
+}
+
+const getCalendar = async (req, res, next) => {
+  try {
+
+    req.calendar = google.gmail({
+      auth: req.jwtClient,
+      version: "v1",
     })
     next()
 
@@ -79,4 +116,10 @@ const getCalendarId = async (req, res, next) => {
   }
 }
 
-module.exports = { resetClient, getCalendar, getCalendarId }
+module.exports = {
+  resetClient,
+  getClient,
+  getEmailSender,
+  getCalendar,
+  getCalendarId,
+}

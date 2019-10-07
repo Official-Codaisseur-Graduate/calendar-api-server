@@ -1,11 +1,11 @@
 const { Router } = require("express")
 
 const Config = require("../config/model")
-const { getCalendar, getCalendarId } = require("./middleware")
+const { getClient, getCalendar, getCalendarId } = require("./middleware")
 
 const router = new Router()
 
-router.get("/calendars", getCalendar, async (req, res) => {
+router.get("/calendars", getClient, getCalendar, async (req, res) => {
   try {
 
     if (req.user.rank < 4) {
@@ -59,7 +59,7 @@ router.get("/calendars", getCalendar, async (req, res) => {
 })
 
 router.get("/events/:year/:month/:day",
-  getCalendar, getCalendarId, (req, res) => {
+  getClient, getCalendar, getCalendarId, (req, res) => {
     try {
 
       if (!req.user.rank) {
