@@ -144,4 +144,82 @@ router.post("/calendar", async (req, res) => {
   }
 })
 
+router.post("/configemail", async (req, res) => {
+  try {
+
+    if (req.user.rank < 4) {
+      return res.status(403).send({
+        message: "Only admin users can set configuration.",
+      })
+    }
+
+    if (!checkString(req.body.password)) {
+      return res.status(400).send({
+        message: "'password' must be a valid password for the " +
+          "user that is updating the configuration.",
+      })
+    }
+
+    const comparePassword = await bcrypt
+      .compareSync(req.body.password, req.user.password)
+    if (!comparePassword) {
+      return res.status(401).send({
+        message: "Password incorrect.",
+      })
+    }
+
+    if (!checkEmail(req.body.send_email)) {
+      return res.status(400).send({
+        message: "'send_email' must be a valid gmail address " +
+          "that is used to send notifications.",
+      })
+    }
+
+    if (!checkString(req.body.send_password)) {
+      return res.status(400).send({
+        message: "'send_password' must be a valid password " +
+          "for the gmail address that is used to send notifications.",
+      })
+    }
+
+    const send_email_entry = await Config.findOne({
+      where: { key: "send_email" }
+    })
+    if (!send_email_entry) {
+      await Config.create({
+        key: "send_email",
+        data: req.body.send_email,
+      })
+    } else {
+      await send_email_entry.update({
+        data: req.body.send_email,
+      })
+    }
+
+    const send_password_entry = await Config.findOne({
+      where: { key: "send_password" }
+    })
+    if (!send_password_entry) {
+      await Config.create({
+        key: "send_password",
+        data: req.body.send_password,
+      })
+    } else {
+      await send_password_entry.update({
+        data: req.body.send_password,
+      })
+    }
+
+    return res.send({
+      message: "Send email configuration updated.",
+    })
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error.",
+    })
+  }
+})
+
 module.exports = router
