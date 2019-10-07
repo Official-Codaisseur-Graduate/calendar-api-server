@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs")
 const User = require("../user/model")
 const validate = require("./validate")
 const { toJWT } = require("./jwt")
+const { getEmailCredentials } = require("../sendEmail/middleware")
 const { checkEmail, checkString } = require("../checkData")
 const randomCode = require("../randomCode")
 const { sendRegisterEmail, alreadyRegisteredEmail } =
@@ -81,7 +82,7 @@ router.get("/validation", validate, async (req, res) => {
   }
 })
 
-router.post("/register", async (req, res) => {
+router.post("/register", getEmailCredentials, async (req, res) => {
   try {
 
     if (!checkEmail(req.body.email)) {
@@ -104,9 +105,9 @@ router.post("/register", async (req, res) => {
     // then the user must still be in the registration process.
 
     if (!user.password) {
-      await sendRegisterEmail(user.email, user.validation)
+      await sendRegisterEmail(req.transport, user.email, user.validation)
     } else {
-      await alreadyRegisteredEmail(user.email)
+      await alreadyRegisteredEmail(req.transport, user.email)
     }
 
     // Always return the following "verification email sent" message, 
