@@ -9,7 +9,8 @@ const checkDate = date => {
 const checkEmail = email => {
   try {
     return typeof email === "string" &&
-      email.indexOf("@") > 0 && email.indexOf("@") < email.length - 1
+      email.indexOf("@") > 0 &&
+      email.indexOf("@") < email.length - 1
   } catch (error) {
     return false
   }

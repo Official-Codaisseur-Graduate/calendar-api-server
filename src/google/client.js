@@ -3,6 +3,13 @@ const { google } = require("googleapis")
 const Config = require("../config/model")
 
 const scopes = [
+  // "https://mail.google.com",
+  // "https://www.googleapis.com/auth/gmail.compose",
+  // "https://www.googleapis.com/auth/gmail.modify",
+  // "https://www.googleapis.com/auth/gmail.readonly",
+
+
+
   "https://www.googleapis.com/auth/gmail.send",
   "https://www.googleapis.com/auth/calendar.readonly",
 ]
@@ -13,7 +20,7 @@ const resetClient = () => {
   jwtClient = undefined
 }
 
-const getClient = async () => {
+const getClient = async (req, res, next) => {
   try {
 
     if (!jwtClient ||
@@ -42,6 +49,7 @@ const getClient = async () => {
         null,
         private_key_entry.data,
         scopes,
+        sub = "thelscalendar@gmail.com"
       )
 
       await jwtClient.authorize()
@@ -59,12 +67,12 @@ const getClient = async () => {
   }
 }
 
-const getEmailSender = async (req, res, next) => {
+const getGmail = async (req, res, next) => {
   try {
 
-    req.emailSender = google.users.messages.send({
+    req.gmail = google.gmail({
       auth: req.jwtClient,
-      version: "v3",
+      version: "v1",
     })
     next()
 
@@ -79,9 +87,9 @@ const getEmailSender = async (req, res, next) => {
 const getCalendar = async (req, res, next) => {
   try {
 
-    req.calendar = google.gmail({
+    req.calendar = google.calendar({
       auth: req.jwtClient,
-      version: "v1",
+      version: "v3",
     })
     next()
 
@@ -119,7 +127,7 @@ const getCalendarId = async (req, res, next) => {
 module.exports = {
   resetClient,
   getClient,
-  getEmailSender,
+  getGmail,
   getCalendar,
   getCalendarId,
 }

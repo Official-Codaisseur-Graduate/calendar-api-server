@@ -5,6 +5,7 @@ const User = require("../user/model")
 const validate = require("./validate")
 const { toJWT } = require("./jwt")
 const { superAdmin } = require("./superAdmin")
+const { getClient, getGmail } = require("../google/client")
 const { checkEmail, checkString } = require("../checkData")
 const randomCode = require("../randomCode")
 const { sendRegisterEmail, alreadyRegisteredEmail } =
@@ -81,7 +82,7 @@ router.get("/validation", validate, async (req, res) => {
   }
 })
 
-router.post("/register", async (req, res) => {
+router.post("/register", getClient, getGmail, async (req, res) => {
   try {
 
     if (!checkEmail(req.body.email)) {
@@ -102,11 +103,12 @@ router.post("/register", async (req, res) => {
 
     // If the user does not have a password set for their account,
     // then the user must still be in the registration process.
+    // Otherwise, help the user by linking the Reset Password option.
 
     if (!user.password) {
-      await sendRegisterEmail(user.email, user.validation)
+      await sendRegisterEmail(req.gmail, user.email, user.validation)
     } else {
-      await alreadyRegisteredEmail(user.email)
+      await alreadyRegisteredEmail(req.gmail, user.email)
     }
 
     // Always return the following "verification email sent" message, 
