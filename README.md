@@ -1,6 +1,12 @@
 # calendar-api-server
 The Server API to share calendar data with the public.
 
+Project team:
+
+- Gijs Maas
+- Patty Ouwehand
+- Thels de Kwant
+
 Step-by-step implementation of the calendar-app:
 
 Important!!
@@ -25,8 +31,8 @@ Step A: Set-up service account with google
     Click continue and click create without role
 9. You will download a json-file. Store this on your computer. You will need this later.
 10. Go to calendar.google.com with your cool new gmail-account! 
-11. In the left column click the dots behind your name and click configuration and share.
-12. Click 'add people' and insert the email adres of your service account with rights "see all event details" and click send.
+11. In the left column, under my agendas, click the dots behind your name and click configuration and share.
+12. Click "add people". Insert the email address of your service account with rights "see all event details". Click send.
    If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
 13. Go to your Google calendar and create some test events.
 
@@ -67,12 +73,72 @@ Step D: configure backend-settings on your Frontend
 3. For the Set-up configuration open your json-file you stored earlier in a text-editor.
 4. Copy client_email to the emailbox under set-up configuration.
 5. Copy the (very long) private_key and paste it in the private_key box under set-up configuration.
+   Be sure to copy everything between the quotation marks, including begin and end of private key and all \n entries.
 6. Enter the password from the super-admin (secret) and click submit configuration
 7. Go one page back, and then click the admin-button again to refresh the page.
 8. Setup calendar id should list one or more calendar IDs. Copy the right calendar ID into the calendar ID box.
 9. Enter the password from the super-admin (secret) and click submit calendar ID.
 10. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
 11. Enter the password from the super-admin (secret) and click submit mail verification.
+12. Make sure that everything is stored in your database on the configuration table.
+13. Test everything by registering a new account. You should receive a verification email. Be sure to check your spamfolder.
+14. After creating a new account, log back into the Super-Admin, and in the Admin Panel, give the user a rank.
+15. Log back into the newly created account. You should now be able to access the calendar and see your test events.
 
+Step E: Deploying the Backend to Heroku or other production environment.
 
- 
+Note: We have not actually deployed to Heroku yet, but we have theorized what steps should be taken.
+
+1. Create a new Heroku server for your Backend. Do NOT push your App to Heroku just yet!!
+2. Create a database on your Heroku server: $ heroku addons:create heroku-postgresql:hobby-dev
+3. Go to https://dashboard.heroku.com/apps and open the App you just created.
+4. Go to Settings at the top, and then click on reveal Config Vars.
+5. Add a config variable with key SUPERADMIN and value your own email address (this will be the super admin).
+6. Add another config variable with key SAPASSWORD and value a password that you want to use for the admin.
+7. After saving both config variables, you can git push your app to Heroku.
+8. Change the Frontend so that it connects to Heroku instead of localhost:4000.
+8. Follow the configuration steps listed in step D, except log in with the SUPERADMIN and SAPASSWORD values.
+9. There should be no "your@email.com" account. You can make sure there is not in the Admin Tools.
+   If a "your@email.com" address is created, change it's rank to 0 (unauthorized)!
+
+Ranks: Users are divided into 5 ranks:
+
+0. Unauthorized. All newly created accounts have this rank. They have no rights until a teacher or admin promotes them.
+1. Student. These users can see the calendar and the calendar events.
+2. Assistant. These users should be able to comment that they want to teach assist an event (to be implemented).
+3. Teacher. These users can promote and demote Unauthorizeds, Students and Assistants, but not Teachers or Admins.
+4. Admin. These users can promote and demote everyone, including fellow Admins, so beware!
+   These users can also change the configuration settings through the Admin Panel.
+
+There is also a super admin. This email address and password are specified in process.env.SUPERADMIN and process.env.SAPASSWORD. This super admin does two things:
+
+1. Every time the Backend is started, it checks if a user exists with email process.env.SUPERADMIN. If no such user exists, a new user is created with email process.env.SUPERADMIN, password process.env.SAPASSWORD, and rank 4.
+2. Every time someone logs in, if their email is identical to process.env.SUPERADMIN, and their rank is less than 4, their rank is increased to 4. This prevents others from taking their rank away.
+
+Note that if you change the process.env.SUPERADMIN and process.env.SAPASSWORD settings, this does not remove the admin accounts that are already created. You still need to demote those old admin accounts manually.
+
+Future groups, you are of course welcome to come up with your own tweaks and features to implement, but here are a list of ideas that we would have integrated, had we more time:
+
+- Setup proper routing on the Frontend. This includes only displaying the calendar to authorized users, only displaying the users to teachers and admins, and only displaying configuration settings to admins.
+
+- Setup proper .css styling on the Frontend.
+
+- On the backend, if the send email credentials are sent incorrectly, it should properly throw an error while trying to send an email, and return an Internal Server Error to the Frontend. Currently, the Frontend receives a message that the validation email has been sent.
+
+- Implement "Forgot my password" functionality on Backend and Frontend, through email verification.
+
+- Implement "Change my password" functionality on Backend and Frontend.
+
+- Implement "Change my email" functionality on Backend and Frontend, with email verification step.
+
+- Implement "Change my display name" functionality on Backend and Frontend.
+
+- On the backend, move the baseUrl from a hardcoded string in the URL to a configuration option stored in the database. Add a "set frontend url" functionality on Backend and Frontend, similar to setting the Google API settings.
+
+- On the backend, when setting a new Google API email_client and private_key, test if these connect properly before updating the database.
+
+- On the backend, add an email notification for users whenever a teacher or admin changes their rank.
+
+- n the backend, add an email notification to a specific email address whenever a new account completes registration. This target email address should be configured and stored in the database, so there should be a "Set notification email" functionality on Backend and Frontend, similar to setting the Google API settings.
+
+- Integrate the project with the Codaisseur Readest App. Talk to Wouter de Vos for details.
