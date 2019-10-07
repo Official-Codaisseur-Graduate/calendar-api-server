@@ -26,14 +26,14 @@ Step A: Set-up service account with google
 9. You will download a json-file. Store this on your computer. You will need this later.
 10. Go to calendar.google.com with your cool new gmail-account! 
 11. In the left column click the dots behind your name and click configuration and share.
-12. Click 'add people' and insert the email adres of your service account and click send.
+12. Click 'add people' and insert the email adres of your service account with rights "see all event details" and click send.
    If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
 13. Go to your Google calendar and create some test events.
 
-
 Step B: Set up Backend 
 
-1. Set up a database with docker at port 5432 with password secret
+1. Set up a database with docker at port 5432 with password secret:
+   $ docker run -p 5432:5432 --name calendar-api -e POSTGRES_PASSWORD=secret -d postgres
 2. Get a clone from the project: 
     calendar-api-server (git clone git@github.com:Official-Codaisseur-Graduate/calendar-api-server.git)
 3. enter the project with cd calendar-api-server
@@ -60,6 +60,11 @@ Step D: configure backend-settings on your frontend
 4. Copy client_email to the emailbox under set-up configuration.
 5. Copy the (very long) private_key and paste it in the private_key box under set-up configuration.
 6. Enter the password from the super-admin (secret) and click submit configuration
-7. 
+7. Go one page back, and then click the admin-button again to refresh the page.
+8. Setup calendar id should list one or more calendar IDs. Copy the right calendar ID into the calendar ID box.
+9. Enter the password from the super-admin (secret) and click submit calendar ID.
+10. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
+11. Enter the password from the super-admin (secret) and click submit mail verification.
+
 
  
