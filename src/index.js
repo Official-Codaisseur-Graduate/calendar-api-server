@@ -6,7 +6,7 @@ const authRouter = require("./auth")
 const authMiddleware = require("./auth/auth")
 const userRouter = require("./user")
 const configRouter = require("./config")
-const calendarRouter = require("./calendar")
+const calendarRouter = require("./google/calendar")
 const { databaseSync } = require("./database")
 const { checkSuperAdmin } = require("./auth/superAdmin")
 

@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 
 const Config = require("./model")
 const { checkEmail, checkString } = require("../checkData")
-const { resetClient } = require("../calendar/middleware")
+const { resetClient } = require("../google/client")
 
 const router = new Router()
 

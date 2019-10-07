@@ -4,11 +4,11 @@ const bcrypt = require("bcryptjs")
 const User = require("../user/model")
 const validate = require("./validate")
 const { toJWT } = require("./jwt")
+const { superAdmin } = require("./superAdmin")
 const { checkEmail, checkString } = require("../checkData")
 const randomCode = require("../randomCode")
 const { sendRegisterEmail, alreadyRegisteredEmail } =
-  require("../sendEmail")
-const { superAdmin } = require("./superAdmin")
+  require("../google/sendEmail")
 
 const router = new Router()
 

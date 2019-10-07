@@ -13,7 +13,7 @@ const resetClient = () => {
   jwtClient = undefined
 }
 
-const getClient = async (req, res, next) => {
+const getClient = async () => {
   try {
 
     if (!jwtClient ||

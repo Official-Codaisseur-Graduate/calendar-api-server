@@ -1,7 +1,7 @@
 const { Router } = require("express")
 
 const Config = require("../config/model")
-const { getClient, getCalendar, getCalendarId } = require("./middleware")
+const { getClient, getCalendar, getCalendarId } = require("./client")
 
 const router = new Router()
 
