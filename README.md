@@ -9,8 +9,8 @@ For this project you will need to have a service-account with google. Both for c
 Step A: Set-up service account with google
 
 1. Log out of your existing gmail-account. Go to gmail.com and create a new gmail-account for this project. 
-2. Go to https://console.cloud.google.com and accept the conditions to proceed.
-3. Go to API's and services => dashboard in the left-menu
+2. Go to https://console.cloud.google.com
+3. Go to API's and services => dashboard in the left-menu and accept the conditions
 4. Create a new project and give it a projectname (you don't need to give it a location/organization)
 5  Click on enable API's and services and search for calendar and click on Google Calendar API and press enable
 6. Click on create credentials
@@ -30,4 +30,32 @@ Step A: Set-up service account with google
 Step B: Set up Backend 
 
 1. Set up a database with docker at port 5432 with password secret
-2. Get a clone or download both projects: calendar-api-server (backend) and calendar-api-client (frontend)
+2. Get a clone from the project: 
+    calendar-api-server (git clone git@github.com:Official-Codaisseur-Graduate/calendar-api-server.git)
+3. enter the project with cd calendar-api-server
+4. run npm i to install the node_modules
+5. start with nodemon, you should see listening to :4000 and connected to database in your terminal
+6. run http :4000 and you should see "message": "incorrect url or authorization token required"
+7. Your backend is working!
+
+Step C: Set up Frontend
+
+1. Get a clone from the project:
+  calendar-api-client (git clone git@github.com:Official-Codaisseur-Graduate/calendar-api-client.git)
+2. Enter npm i to install node_modules
+3. type npm start to start the app and you should see a login-screen
+4. you should be able to log in with Email: "your@email.com" and password="secret"
+5. After logging in you should see the calendar
+6. If you check the reduxstore you should see a user in your state named super admin with rank 4 and a jwt-token.
+
+Step D: configure backend-settings on your frontend
+
+1. Be sure you are logged in as super-admin when proceeding with the configuration!!
+2. Click admin-button and you are redirected to the admin-page
+3. For the Set-up configuration open your json-file you stored earlier in a text-editor.
+4. Copy client_email to the emailbox under set-up configuration.
+5. Copy the (very long) private_key and paste it in the private_key box under set-up configuration.
+6. Enter the password from the super-admin (secret) and click submit configuration
+7. 
+
+ 
