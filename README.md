@@ -24,7 +24,11 @@ Step A: Set-up service account with google
     keytype = json
     Click continue and click create without role
 9. You will download a json-file. Store this on your computer. You will need this later.
-10. Add some calendar-events in your calendar at calendar.google.com with your cool new gmail-account! For testing purposes         ofcourse
+10. Go to calendar.google.com with your cool new gmail-account! 
+11. In the left column click the dots behind your name and click configuration and share.
+12. Click 'add people' and insert the email adres of your service account and click send.
+   If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
+13. Go to your Google calendar and create some test events.
 
 
 Step B: Set up Backend 
