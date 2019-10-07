@@ -30,6 +30,13 @@ Step A: Set-up service account with google
    If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
 13. Go to your Google calendar and create some test events.
 
+If you are going to use this gmail address to send verification emails, you also need to perform the following steps.
+   (For now you will. Hopefully, you can figure out a better method to send your email.)
+
+14. Click on your google profile icon in the top right, and click on Google-account.
+15. Click on Security on the bar at the top of the page.
+16. Scroll down to Access for less secure apps, and click Enable Access. Then enable the access.
+
 Step B: Set up Backend 
 
 1. Set up a database with docker at port 5432 with password secret:
@@ -38,7 +45,8 @@ Step B: Set up Backend
     calendar-api-server (git clone git@github.com:Official-Codaisseur-Graduate/calendar-api-server.git)
 3. enter the project with cd calendar-api-server
 4. run npm i to install the node_modules
-5. start with nodemon, you should see listening to :4000 and connected to database in your terminal
+5. start with "node ." (or "nodemon", if you have that installed).
+   You should see listening to :4000 and connected to database in your terminal
 6. run http :4000 and you should see "message": "incorrect url or authorization token required"
 7. Your backend is working!
 
@@ -52,7 +60,7 @@ Step C: Set up Frontend
 5. After logging in you should see the calendar
 6. If you check the reduxstore you should see a user in your state named super admin with rank 4 and a jwt-token.
 
-Step D: configure backend-settings on your frontend
+Step D: configure backend-settings on your Frontend
 
 1. Be sure you are logged in as super-admin when proceeding with the configuration!!
 2. Click admin-button and you are redirected to the admin-page
