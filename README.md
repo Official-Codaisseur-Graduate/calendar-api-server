@@ -139,6 +139,6 @@ Future groups, you are of course welcome to come up with your own tweaks and fea
 
 - On the backend, add an email notification for users whenever a teacher or admin changes their rank.
 
-- n the backend, add an email notification to a specific email address whenever a new account completes registration. This target email address should be configured and stored in the database, so there should be a "Set notification email" functionality on Backend and Frontend, similar to setting the Google API settings.
+- On the backend, add an email notification to a specific email address whenever a new account completes registration. This target email address should be configured and stored in the database, so there should be a "Set notification email" functionality on Backend and Frontend, similar to setting the Google API settings.
 
 - Integrate the project with the Codaisseur Readest App. Talk to Wouter de Vos for details.
