@@ -32,7 +32,7 @@ Step A: Set-up service account with google
 9. You will download a json-file. Store this on your computer. You will need this later.
 10. Go to calendar.google.com with your cool new gmail-account! 
 11. In the left column, under my agendas, click the dots beside your name on the left side of the screen(dots appear when you hover the mouse/cursor on your name) and click csettings and sharing.
-12. Scroll down to share with specific people and click on "adding people". Insert the email address of your service account with rights "see all event details". Click send. If the account does not show while adding in the last process, because you can only add people from contacts. So, go to gmail, click on the dots(google apps) on the right hand side beside your name, and open contacts. There, add the service gmail account in your contacts. Once that is done, come back and repeat step 12.
+12. Scroll down to share with specific people and click on "adding people". Insert the email address of your service account with rights "see all event details". Click send. If the account does not show while adding in the last process, because you can only add people from contacts. So, go to gmail, click on the dots(google apps) on the right hand side beside your name, and open contacts. There, add the service gmail account in your contacts. Once that is done, come back and repeat step 11.
    If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
 13. Go to your Google calendar and create some test events.
 
