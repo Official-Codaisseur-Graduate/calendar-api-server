@@ -19,7 +19,7 @@ Step A: Set-up service account with google
 3. Go to API's and services => dashboard in the left-menu and accept the conditions
 4. Create a new project and give it a projectname (you don't need to give it a location/organization)
 5  Click on enable API's and services and search for calendar and click on Google Calendar API and press enable
-6. Click on create credentials
+6. Click on create credentials and "then help me choose" in the drop down menu
 7. Which API are you using? Select Google Calendar API in the drop-down-menu
    Where will you be calling the API from?  select webserver.
    What data will you be accessing? Application Data
