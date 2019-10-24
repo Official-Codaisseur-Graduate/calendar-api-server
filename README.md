@@ -1,11 +1,16 @@
 # calendar-api-server
 The Server API to share calendar data with the public.
 
-Project team:
+Maiden Project team:
 
 - Gijs Maas
 - Patty Ouwehand
 - Thels de Kwant
+
+Consecutive Project team:
+
+Akash Chandra
+Nirupamaa Jaya
 
 Step-by-step implementation of the calendar-app:
 
@@ -16,9 +21,9 @@ Step A: Set-up service account with google
 
 1. Log out of your existing gmail-account. Go to gmail.com and create a new gmail-account for this project. 
 2. Go to https://console.cloud.google.com
-3. Go to API's and services => dashboard in the left-menu and accept the conditions
-4. Create a new project and give it a projectname (you don't need to give it a location/organization)
-5  Click on enable API's and services and search for calendar and click on Google Calendar API and press enable
+3. Go to API's and services => dashboard in the left-menu and accept the conditions.
+4. Create a new project and give it a projectname (you don't need to give it a location/organization).
+5  Click on enable API's and services on the left and search for calendar and click on Google Calendar API and press enable
 6. Click on create credentials and "then help me choose" in the drop down menu
 7. Which API are you using? Select Google Calendar API in the drop-down-menu
    Where will you be calling the API from?  select webserver.
@@ -31,9 +36,9 @@ Step A: Set-up service account with google
     Click continue and click create without role
 9. You will download a json-file. Store this on your computer. You will need this later.
 10. Go to calendar.google.com with your cool new gmail-account! 
-11. In the left column, under my agendas, click the dots beside your name on the left side of the screen(dots appear when you hover the mouse/cursor on your name) and click csettings and sharing.
+11. In the left column, under my agendas, click the dots beside your name on the left side of the screen(dots appear when you hover the mouse/cursor on your name) and click settings and sharing.
 12. Scroll down to share with specific people and click on "adding people". Insert the email address of your service account with rights "see all event details". Click send. If the account does not show while adding in the last process, because you can only add people from contacts. So, go to gmail, click on the dots(google apps) on the right hand side beside your name, and open contacts. There, add the service gmail account in your contacts. Once that is done, come back and repeat step 11.
-   If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
+If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
 13. Go to your Google calendar and create some test events.
 
 If you are going to use this gmail address to send verification emails, you also need to perform the following steps.
@@ -76,7 +81,7 @@ Step D: configure backend-settings on your Frontend
    Be sure to copy everything between the quotation marks, including begin and end of private key and all \n entries.
 6. Enter the password from the super-admin (secret) and click submit configuration
 7. Go one page back, and then click the admin-button again to refresh the page.
-8. Setup calendar id should list one or more calendar IDs. Copy the right calendar ID into the calendar ID box.
+8. To do the initials setup for the calendar id, go to caldendar.google.com with your newly created gmail account and click on setting of the account like you did for step A.12. Copy the agenda id at the bottom of the page and paste it in the calendar id box in the admin page. 
 9. Enter the password from the super-admin (secret) and click submit calendar ID.
 10. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
 11. Enter the password from the super-admin (secret) and click submit mail verification.
