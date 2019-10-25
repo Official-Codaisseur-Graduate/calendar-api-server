@@ -15,13 +15,13 @@ app.use(
   cors(),
   bodyParser.json(),
   authRouter,
-  authMiddleware,
+  authMiddleware,  // authentication happens for every routes(endpoints)
   userRouter,
   configRouter,
   calendarRouter,
 )
 
 const port = process.env.PORT || 4000
-app.listen(port, () => console.log(`Listening to :${port}`))
+app.listen(port, () => console.log(`Listening to :${port}`)) // starting the app on port 4000
 
-databaseSync().then(checkSuperAdmin)
+databaseSync().then(checkSuperAdmin) // creating a superadmin when the  database is created

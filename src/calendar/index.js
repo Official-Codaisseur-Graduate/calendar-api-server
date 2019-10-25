@@ -1,9 +1,10 @@
 const { Router } = require("express")
-
+const auth = require('../auth/auth')
 const Config = require("../config/model")
 const { getCalendar, getCalendarId } = require("./middleware")
 
 const router = new Router()
+
 
 router.get("/calendars", getCalendar, async (req, res) => {
   try {
@@ -59,8 +60,13 @@ router.get("/calendars", getCalendar, async (req, res) => {
   }
 })
 
-router.get("/events/:year/:month/:day",
+
+/* this endpoint shows all the events of the current date if the calendar Id is setup
+   Initially  while setting up, it will throw an error because the calendar Id is not setup
+*/
+router.get("/events/:year/:month/:day", auth,
   getCalendar, getCalendarId, (req, res) => {
+
     try {
 
       if (!req.user.rank) {
@@ -84,17 +90,17 @@ router.get("/events/:year/:month/:day",
           timeMin: startDate.toISOString(),
           timeMax: endDate.toISOString(),
           singleEvents: true,
-          orderBy: "startTime",
+          orderBy: "starttime",
         },
 
         (error, result) => {
           if (error) {
             console.error(error)
             return res.status(500).send({
-              message: "Internal server error."
+              message: "Error"
             })
           }
-
+// res.json the below line
           res.send({
             events: result.data.items.map(event => ({
               ...event
@@ -110,7 +116,7 @@ router.get("/events/:year/:month/:day",
     } catch (error) {
       console.error(error)
       return res.status(500).send({
-        message: "Internal server error.",
+        message: "error Check.",
       })
     }
   })

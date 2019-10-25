@@ -14,6 +14,8 @@ const { superAdmin } = require("./superAdmin")
 const router = new Router()
 
 router.get("/validation", validate, async (req, res) => {
+  console.log("req.user.password / validation" , req.user.password)
+  console.log("req.user.newEmail / validation" , req.user.newEmail)
   try {
 
     // If the user does not have a password set for their account,
@@ -221,7 +223,20 @@ router.post("/register", async (req, res) => {
   }
 })
 
+
+/* 
+   The login endpoint does the following:
+     -- it checks whether the email and password matches the record in database.
+     -- it sends
+           -- user id,
+           -- email,
+           -- name,
+           -- rank 
+           -- JWT Token
+*/
+
 router.post("/login", async (req, res) => {
+  console.log("req.body" , req.body)
   try {
 
     if (!checkString(req.body.email)) {

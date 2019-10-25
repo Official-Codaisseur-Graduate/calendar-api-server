@@ -1,6 +1,7 @@
 const User = require("../user/model")
 
 const validate = async (req, res, next) => {
+  console.log("Req.headers.validation/validate", req.headers.validation)
   try {
 
     if (!req.headers.validation) {

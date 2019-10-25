@@ -1,6 +1,8 @@
 const User = require("../user/model")
 const { toData } = require("./jwt")
 
+// This middleware(auth) is used to check if the user is logged in or not
+
 const auth = async (req, res, next) => {
   try {
     const authorization = req.headers.authorization &&
