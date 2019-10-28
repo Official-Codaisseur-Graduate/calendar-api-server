@@ -13,7 +13,10 @@ const { superAdmin } = require("./superAdmin")
 
 const router = new Router()
 
+
 router.get("/validation", validate, async (req, res) => {
+  console.log("req.user.password / validation" , req.user.password)
+  console.log("req.user.newEmail / validation" , req.user.newEmail)
   try {
 
     // If the user does not have a password set for their account,
@@ -82,6 +85,8 @@ router.get("/validation", validate, async (req, res) => {
   }
 })
 
+
+// gets the email credentials finds the user with the email and creates a user in user model.
 router.post("/register", getEmailCredentials, async (req, res) => {
   try {
 
@@ -127,9 +132,12 @@ router.post("/register", getEmailCredentials, async (req, res) => {
   }
 })
 
+
+// SignUp validation after you click on the link from the email
 router.post("/registervalidation", validate, async (req, res) => {
   try {
 
+    // check if password is 8 characters long
     if (!checkString(req.body.password, 8)) {
       return res.status(400).send({
         message: "'password' must be a password with at least " +
@@ -143,6 +151,7 @@ router.post("/registervalidation", validate, async (req, res) => {
       })
     }
 
+    // check the name if it alteast has 2 characters and less than 40 characters
     if (!checkString(req.body.name, 2, 40)) {
       return res.status(400).send({
         message: "'name' must be a string with at at least " +
@@ -150,6 +159,7 @@ router.post("/registervalidation", validate, async (req, res) => {
       })
     }
 
+    // storing the password by hashing it
     const encryptedPassword = await bcrypt
       .hashSync(req.body.password, 10)
     req.user.update({
@@ -157,6 +167,8 @@ router.post("/registervalidation", validate, async (req, res) => {
       name: req.body.name,
       validation: null,
     })
+
+    // sends the jwt to the frontend
     return res.status(400).send({
       message: "User account registered.",
       user: {
@@ -176,52 +188,65 @@ router.post("/registervalidation", validate, async (req, res) => {
   }
 })
 
-router.post("/register", async (req, res) => {
-  try {
+// router.post("/register", async (req, res) => {
+//   try {
 
-    if (!checkEmail(req.body.email)) {
-      return res.status(400).send({
-        message: "'email' must be an email address.",
-      })
-    }
+//     if (!checkEmail(req.body.email)) {
+//       return res.status(400).send({
+//         message: "'email' must be an email address.",
+//       })
+//     }
 
-    let user = await User.findOne({
-      where: { email: req.body.email },
-    })
-    if (!user) {
-      user = await User.create({
-        email: req.body.email,
-        validation: randomCode(),
-      })
-    }
+//     let user = await User.findOne({
+//       where: { email: req.body.email },
+//     })
+//     if (!user) {
+//       user = await User.create({
+//         email: req.body.email,
+//         validation: randomCode(),
+//       })
+//     }
 
-    // If the user does not have a password set for their account,
-    // then the user must still be in the registration process.
+//     // If the user does not have a password set for their account,
+//     // then the user must still be in the registration process.
 
-    if (!user.password) {
-      await sendRegisterEmail(user.email, user.validation)
-    } else {
-      await alreadyRegisteredEmail(user.email)
-    }
+//     if (!user.password) {
+//       await sendRegisterEmail(user.email, user.validation)
+//     } else {
+//       await alreadyRegisteredEmail(user.email)
+//     }
 
-    // Always return the following "verification email sent" message, 
-    // regardless whether the email is already found in the database,
-    // So users cannot go fish for which emails do or do not exist.
-    // The actual email that was sent above informs the user.
+//     // Always return the following "verification email sent" message, 
+//     // regardless whether the email is already found in the database,
+//     // So users cannot go fish for which emails do or do not exist.
+//     // The actual email that was sent above informs the user.
 
-    return res.send({
-      message: "Verification email sent. Check your email to continue.",
-    })
+//     return res.send({
+//       message: "Verification email sent. Check your email to continue.",
+//     })
 
-  } catch (error) {
-    console.error(error)
-    return res.status(500).send({
-      message: "Internal server error.",
-    })
-  }
-})
+//   } catch (error) {
+//     console.error(error)
+//     return res.status(500).send({
+//       message: "Internal server error.",
+//     })
+//   }
+// })
+
+
+/* 
+   The login endpoint does the following:
+     -- it checks whether the email and password matches the record in database.
+     -- it sends
+           -- user id,
+           -- email,
+           -- name,
+           -- rank 
+           -- JWT Token
+*/
 
 router.post("/login", async (req, res) => {
+  console.log("req.body" , req.body)
   try {
 
     if (!checkString(req.body.email)) {

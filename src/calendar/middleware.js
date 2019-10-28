@@ -8,7 +8,10 @@ const resetClient = () => {
   jwtClient = undefined
 }
 
+
+// the function getCalendar connects to the google API calendar
 const getCalendar = async (req, res, next) => {
+  console.log("JWT", jwtClient)
   try {
     if (!jwtClient ||
       jwtClient.credentials.expiry_date < Date.now() + 10000) {
@@ -47,15 +50,18 @@ const getCalendar = async (req, res, next) => {
       version: "v3",
     })
     next()
+    //console.log("req.calendar=============", req.calendar)
 
   } catch (error) {
     console.error(error)
     return res.status(500).send({
-      message: "Internal server error."
+      message: "error getcalendar."
     })
   }
 }
 
+
+// getCalendarId function gets the calendar Id data from the database
 const getCalendarId = async (req, res, next) => {
   try {
 
@@ -68,6 +74,7 @@ const getCalendarId = async (req, res, next) => {
       })
     }
 
+    console.log("calendarId",req.calendarId)
     req.calendarId = calendar_id_entry.data
     next()
 

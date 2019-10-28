@@ -1,6 +1,9 @@
 const User = require("../user/model")
 
+
+// finds a user based on the validation 
 const validate = async (req, res, next) => {
+  console.log("Req.headers.validation/validate", req.headers.validation)
   try {
 
     if (!req.headers.validation) {

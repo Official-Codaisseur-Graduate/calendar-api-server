@@ -2,6 +2,7 @@ const nodemailer = require("nodemailer")
 
 const Config = require("../config/model")
 
+// check if the admin has provided the email for accessing the app. So if a user tries to sign up, they would fail with an alert "no send email confifuration set by admin"
 const getEmailCredentials = async (req, res, next) => {
   try {
 
