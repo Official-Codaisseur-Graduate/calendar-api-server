@@ -124,18 +124,18 @@ There is also a super admin. This email address and password are specified in pr
 1. When admin logs in initially, the router "/events/:year/:month/:day" in the file calendar/index.js should not be called. It should be called only once the calendar id is setup.
 
 2. On the admin page, under the "Setup email verification" the password at the moment is the passowrd of the user's  email    id. 
--- We need the email id and the passowrd of the user to send the verification mail but it would be ridiculous to ask the user for their password as well. 
--- One way to get the password of the user is by adding a password textfield in the user signup and store the encrypted password(use bcrypt for encryption) in the configuration model in the backend with key as send_password.
--- To send the verification mail, you will need to bcrypt the user's password.
--- Start with removing the password field in the admin page under setup mail verification.
+- We need the email id and the passowrd of the user to send the verification mail but it would be ridiculous to ask the user for their password as well. 
+- One way to get the password of the user is by adding a password textfield in the user signup and store the encrypted password(use bcrypt for encryption) in the configuration model in the backend with key as send_password.
+- To send the verification mail, you will need to bcrypt the user's password.
+- Start with removing the password field in the admin page under setup mail verification.
 
 3 Remove the text under Setup Calendar in the container where it says "Copy paste the following calendar id".
 
 ### Future groups, you are of course welcome to come up with your own tweaks and features to implement, but here are a list of ideas/hints that we would have integrated, had we more time:
 
 1. Setup proper routing on the Frontend:
-    -- Only displaying the user email and rank to teachers and admins where they can change rank.
-    -- Make a list of unauthorized users appear after logging in as a teacher(rank 3). At the moment teachers do not have a button to change the rank of the users. To do that, once the list of unauthorized users are shown, the teacher clicks on a user where he can change the rank. To implement rank, provide 2 buttons(rank 1 and 2). The teacher can decide the rank of the user. Store the rank of the corresponding user in the database. There is some grey area here, and you are free to take any approach suitable to you.
+- Only displaying the user email and rank to teachers and admins where they can change rank.
+- Make a list of unauthorized users appear after logging in as a teacher(rank 3). At the moment teachers do not have a button to change the rank of the users. To do that, once the list of unauthorized users are shown, the teacher clicks on a user where he can change the rank. To implement rank, provide 2 buttons(rank 1 and 2). The teacher can decide the rank of the user. Store the rank of the corresponding user in the database. There is some grey area here, and you are free to take any approach suitable to you.
 
 2. Setup proper .css styling on the Frontend.
 
