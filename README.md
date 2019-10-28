@@ -76,7 +76,7 @@ If you are going to use this gmail address to send verification emails, you also
    Be sure to copy everything between the quotation marks, including begin and end of private key and all \n entries.
 6. Enter the password from the super-admin (secret) and click submit configuration
 7. Go one page back, and then click the admin-button again to refresh the page.
-8. To do the initials setup for the calendar id, go to caldendar.google.com with your newly created gmail account and click on setting of the account like you did for step A.12. Copy the agenda id at the bottom of the page and paste it in the calendar id box in the admin page. 
+8. To do the initials setup for the calendar id, go to calendar.google.com with your newly created gmail account and click on setting of the account like you did for step A.12. Copy the agenda id at the bottom of the page and paste it in the calendar id box in the admin page. 
 9. Enter the password from the super-admin (secret) and click submit calendar ID.
 10. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
 11. Enter the password from the super-admin (secret) and click submit mail verification.
