@@ -321,7 +321,10 @@ router.post("/forgot-password", getEmailCredentials, async (req, res) => {
         message: "Email address not found",
       })
     } else {
-      await ResetPassword(req.transport, user.email)
+      user.update({
+        validation: randomCode()
+      })
+      await ResetPassword(req.transport, user.email, user.validation)
     }
 
     return res.send({
@@ -336,23 +339,33 @@ router.post("/forgot-password", getEmailCredentials, async (req, res) => {
   }
 })
 
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password', validate, async (req, res) => {
+  console.log("RESET PASSWORD", req.body)
   try {
     let user = await User.findOne({
       where: { email: req.body.email },
     })
     // console.log("USER", user.email)
     if (user.email) {
-      const encryptedPassword = await bcrypt
-        .hashSync(req.body.new_password, 10)
-      // console.log("NEW PASSWORD", encryptedPassword)
-      // console.log("OLD PASSWORD", user.password)
-      user.update({
-        password: encryptedPassword
-      })
-      return res.status(200).send({
-        message: "Password has changed",
-      })
+      // check if the new password is 8 characters long
+      if (!checkString(req.body.new_password, 8)) {
+        return res.status(400).send({
+          message: "'password' must be a password with at least " +
+            "8 characters.",
+        })
+      } else {
+        // storing the password by hashing it
+        const encryptedPassword = await bcrypt
+          .hashSync(req.body.new_password, 10)
+        //Reset old password to new password
+        user.update({
+          password: encryptedPassword,
+          validation: null,
+        })
+        return res.status(200).send({
+          message: "Password has changed",
+        })
+      }
     }
 
   } catch (error) {

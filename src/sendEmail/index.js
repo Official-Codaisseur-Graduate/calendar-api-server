@@ -52,7 +52,7 @@ const alreadyRegisteredEmail = async (transport, to) => {
     However, an account with this email address already exists.
 
     If you have forgotten your password, reset it with the link below:
-    ${baseUrl}/resetpassword/${to}
+    ${baseUrl}/resetpassword/${validation}/${to}
 
     Thank you.`
 
@@ -64,7 +64,7 @@ const alreadyRegisteredEmail = async (transport, to) => {
     <p>However, an account with this email address already exists.</p>
 
     <p>If you forgot your password, reset it with the link below:</p>
-    <a href="${baseUrl}/resetpassword/${to}">Reset your password</a>
+    <a href="${baseUrl}/resetpassword/${validation}/${to}">Reset your password</a>
   
     <p>Thank you.</p>`
 
@@ -72,7 +72,7 @@ const alreadyRegisteredEmail = async (transport, to) => {
 }
 
 
-const ResetPassword = async (transport, to) => {
+const ResetPassword = async (transport, to, validation) => {
   const subject = `Codaisseur Calendar reset password.`
 
   const text = `Dear,
@@ -83,7 +83,7 @@ const ResetPassword = async (transport, to) => {
 
     kindly use this link below to reset your password:
 
-    ${baseUrl}/resetpassword/${to}
+    ${baseUrl}/resetpassword/${validation}/${to}
 
     Thank you.`
 
@@ -93,7 +93,7 @@ const ResetPassword = async (transport, to) => {
     <p>You requested for a password reset,</p>
 
     <p>kindly use this link below to reset your password:</p>
-    <a href="${baseUrl}/resetpassword/${to}">Click here to reset your password</a>
+    <a href="${baseUrl}/resetpassword/${validation}/${to}">Click here to reset your password</a>
   
     <p>Thank you.</p>`
 
