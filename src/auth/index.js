@@ -7,7 +7,7 @@ const { toJWT } = require("./jwt")
 const { getEmailCredentials } = require("../sendEmail/middleware")
 const { checkEmail, checkString } = require("../checkData")
 const randomCode = require("../randomCode")
-const { sendRegisterEmail, alreadyRegisteredEmail } =
+const { sendRegisterEmail, alreadyRegisteredEmail, ResetPassword } =
   require("../sendEmail")
 const { superAdmin } = require("./superAdmin")
 
@@ -15,8 +15,8 @@ const router = new Router()
 
 
 router.get("/validation", validate, async (req, res) => {
-  console.log("req.user.password / validation" , req.user.password)
-  console.log("req.user.newEmail / validation" , req.user.newEmail)
+  console.log("req.user.password / validation", req.user.password)
+  console.log("req.user.newEmail / validation", req.user.newEmail)
   try {
 
     // If the user does not have a password set for their account,
@@ -245,8 +245,9 @@ router.post("/registervalidation", validate, async (req, res) => {
            -- JWT Token
 */
 
+
 router.post("/login", async (req, res) => {
-  console.log("req.body" , req.body)
+  console.log("req.body", req.body)
   try {
 
     if (!checkString(req.body.email)) {
@@ -300,6 +301,59 @@ router.post("/login", async (req, res) => {
         jwt: toJWT({ userId: user.id }),
       },
     })
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error.",
+    })
+  }
+})
+
+
+router.post("/forgot-password", getEmailCredentials, async (req, res) => {
+  try {
+    let user = await User.findOne({
+      where: { email: req.body.email },
+    })
+    if (!user) {
+      return res.status(400).send({
+        message: "Email address not found",
+      })
+    } else {
+      await ResetPassword(req.transport, user.email)
+    }
+
+    return res.send({
+      message: "Verification email sent. Check your email to continue.",
+    })
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({
+      message: "Internal server error.",
+    })
+  }
+})
+
+router.post('/reset-password', async (req, res) => {
+  try {
+    let user = await User.findOne({
+      where: { email: req.body.email },
+    })
+    // console.log("USER", user.email)
+    if (user.email) {
+      const encryptedPassword = await bcrypt
+        .hashSync(req.body.new_password, 10)
+      // console.log("NEW PASSWORD", encryptedPassword)
+      // console.log("OLD PASSWORD", user.password)
+      user.update({
+        password: encryptedPassword
+      })
+      return res.status(200).send({
+        message: "Password has changed",
+      })
+    }
 
   } catch (error) {
     console.error(error)

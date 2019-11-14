@@ -52,7 +52,7 @@ const alreadyRegisteredEmail = async (transport, to) => {
     However, an account with this email address already exists.
 
     If you have forgotten your password, reset it with the link below:
-    ${baseUrl}/resetpassword
+    ${baseUrl}/resetpassword/${to}
 
     Thank you.`
 
@@ -64,14 +64,45 @@ const alreadyRegisteredEmail = async (transport, to) => {
     <p>However, an account with this email address already exists.</p>
 
     <p>If you forgot your password, reset it with the link below:</p>
-    <a href="${baseUrl}/resetpassword">Reset your password</a>
+    <a href="${baseUrl}/resetpassword/${to}">Reset your password</a>
   
     <p>Thank you.</p>`
 
   await sendEmail(transport, to, subject, text, html)
 }
 
+
+const ResetPassword = async (transport, to) => {
+  const subject = `Codaisseur Calendar reset password.`
+
+  const text = `Dear,
+
+    ${to}
+
+    You requested for a password reset,
+
+    kindly use this link below to reset your password:
+
+    ${baseUrl}/resetpassword/${to}
+
+    Thank you.`
+
+  const html = `<h3>Dear,</h3>
+    <p>${to}</p>
+
+    <p>You requested for a password reset,</p>
+
+    <p>kindly use this link below to reset your password:</p>
+    <a href="${baseUrl}/resetpassword/${to}">Click here to reset your password</a>
+  
+    <p>Thank you.</p>`
+
+  await sendEmail(transport, to, subject, text, html)
+}
+
+
 module.exports = {
   sendRegisterEmail,
   alreadyRegisteredEmail,
+  ResetPassword
 }
