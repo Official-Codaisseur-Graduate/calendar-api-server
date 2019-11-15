@@ -1,13 +1,21 @@
 const jwt = require("jsonwebtoken")
 
-
 // functions required for processing JWT token and converting the token to data to get user id
+const secret = process.env.JWT_SECRET || "$=zY$T+qPxiC#wXB7!Jq3UUX!mO&MVY*m8kyxRgUtpR@dPniVJzNof!!&iDld=np"
 
-const secret = process.env.JWT_SECRET ||
-  "$=zY$T+qPxiC#wXB7!Jq3UUX!mO&MVY*m8kyxRgUtpR@dPniVJzNof!!&iDld=np"
+const toJWT = data => {
+  // Production
+  if (process.env.PORT) {
+    return jwt.sign(data, secret, {
+      expiresIn: '15m' // Token which experires in 15 minutes
+    })
+  }
 
-const toJWT = data =>
-  jwt.sign(data, secret, { expiresIn: "2h" })
+  // Development - testing
+  return jwt.sign(data, secret, {
+    expiresIn: '24h' // Token which experires in 24 hours
+  })
+}
 
 const toData = token => {
   try {
@@ -17,4 +25,7 @@ const toData = token => {
   }
 }
 
-module.exports = { toJWT, toData }
+module.exports = {
+  toJWT,
+  toData
+}
