@@ -7,8 +7,7 @@ const { toJWT } = require("./jwt")
 const { getEmailCredentials } = require("../sendEmail/middleware")
 const { checkEmail, checkString } = require("../checkData")
 const randomCode = require("../randomCode")
-const { sendRegisterEmail, alreadyRegisteredEmail, ResetPassword } =
-  require("../sendEmail")
+const { sendRegisterEmail, alreadyRegisteredEmail, ResetPassword } = require("../sendEmail")
 const { superAdmin } = require("./superAdmin")
 
 const router = new Router()
@@ -53,7 +52,9 @@ router.get("/validation", validate, async (req, res) => {
     // Check if someone already uses that new email address.
 
     const checkUser = await User.findOne({
-      where: { email: req.user.newEmail },
+      where: {
+        email: req.user.newEmail
+      },
     })
     if (checkUser) {
       user.update({
@@ -97,7 +98,9 @@ router.post("/register", getEmailCredentials, async (req, res) => {
     }
 
     let user = await User.findOne({
-      where: { email: req.body.email },
+      where: {
+        email: req.body.email
+      },
     })
     if (!user) {
       user = await User.create({
@@ -169,14 +172,16 @@ router.post("/registervalidation", validate, async (req, res) => {
     })
 
     // sends the jwt to the frontend
-    return res.status(400).send({
+    return res.send({
       message: "User account registered.",
       user: {
         id: req.user.id,
         email: req.user.email,
         name: req.user.name,
         rank: req.user.rank,
-        jwt: toJWT({ userId: req.user.id }),
+        jwt: toJWT({
+          userId: req.user.id
+        }),
       },
     })
 
@@ -268,7 +273,9 @@ router.post("/login", async (req, res) => {
     // So users cannot go fish for which emails do or do not exist.
 
     const user = await User.findOne({
-      where: { email: req.body.email },
+      where: {
+        email: req.body.email
+      },
     })
     if (!user) {
       return res.status(400).send({
@@ -298,7 +305,9 @@ router.post("/login", async (req, res) => {
         email: user.email,
         name: user.name,
         rank: user.rank,
-        jwt: toJWT({ userId: user.id }),
+        jwt: toJWT({
+          userId: user.id
+        }),
       },
     })
 
@@ -322,7 +331,9 @@ router.post("/login", async (req, res) => {
 router.post("/forgot-password", getEmailCredentials, async (req, res) => {
   try {
     let user = await User.findOne({
-      where: { email: req.body.email },
+      where: {
+        email: req.body.email
+      },
     })
     if (!user) {
       return res.status(400).send({
@@ -364,7 +375,9 @@ router.post('/reset-password', validate, async (req, res) => {
   // console.log("RESET PASSWORD", req.body)
   try {
     let user = await User.findOne({
-      where: { email: req.body.email },
+      where: {
+        email: req.body.email
+      },
     })
     // console.log("USER", user.email)
     if (user.email) {
