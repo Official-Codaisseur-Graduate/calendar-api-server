@@ -1,24 +1,18 @@
 # Calendar-api-server
+
 The Server API to share calendar data with the public.
 
-Project team:
+## Step-by-step implementation/configuration of the calendar app
 
-- Gijs Maas
-- Patty Ouwehand
-- Thels de Kwant
+**Important!** For this project you will need to have a service-account with google. Both for contacting the calendar-api from google and for the emailverification steps for the users of the calendar-app!!
 
-### Step-by-step implementation of the calendar-app:
+### Step A: Set-up service account with google
 
-### Important!!
-For this project you will need to have a service-account with google. Both for contacting the calendar-api from google and for the emailverification steps for the users of the calendar-app!!
-
-#### Step A: Set-up service account with google
-
-1. Log out of your existing gmail-account. Go to gmail.com and create a new gmail-account for this project. 
+1. Log out of your existing gmail-account. Go to gmail.com and create a new gmail-account for this project.
 2. Go to https://console.cloud.google.com
 3. Go to API's and services => dashboard in the left-menu and accept the conditions.
 4. Create a new project and give it a projectname (you don't need to give it a location/organization).
-5  Click on enable API's and services on the left and search for calendar and click on Google Calendar API and press enable
+5. Click on enable API's and services on the left and search for calendar and click on Google Calendar API and press enable
 6. Click on create credentials and "then help me choose" in the drop down menu
 7. Which API are you using? Select Google Calendar API in the drop-down-menu
    Where will you be calling the API from?  select webserver.
@@ -36,18 +30,18 @@ For this project you will need to have a service-account with google. Both for c
 If you forgot your service account email, which is not the same as the email your create yourself. go to IAM service          accounts at console.cloud.google.com.
 13. Go to your Google calendar and create some test events.
 
-If you are going to use this gmail address to send verification emails, you also need to perform the following steps.
+- If you are going to use this gmail address to send verification emails, you also need to perform the following steps.
    (For now you will. Hopefully, you can figure out a better method to send your email.)
 
 14. Click on your google profile icon in the top right, and click on Google-account.
 15. Click on Security on the bar at the top of the page.
 16. Scroll down to Access for less secure apps, and click Enable Access. Then enable the access.
 
-#### Step B: Set up Backend 
+### Step B: Set up Backend
 
 1. Set up a database with docker at port 5432 with password secret:
    $ docker run -p 5432:5432 --name calendar-api -e POSTGRES_PASSWORD=secret -d postgres
-2. Get a clone from the project: 
+2. Get a clone from the project:
     calendar-api-server (git clone git@github.com:Official-Codaisseur-Graduate/calendar-api-server.git)
 3. enter the project with cd calendar-api-server
 4. run npm i to install the node_modules
@@ -56,7 +50,7 @@ If you are going to use this gmail address to send verification emails, you also
 6. run http :4000 and you should see "message": "incorrect url or authorization token required"
 7. Your backend is working!
 
-#### Step C: Set up Frontend
+### Step C: Set up Frontend
 
 1. Get a clone from the project:
   calendar-api-client (git clone git@github.com:Official-Codaisseur-Graduate/calendar-api-client.git)
@@ -66,7 +60,7 @@ If you are going to use this gmail address to send verification emails, you also
 5. After logging in you should see the calendar
 6. If you check the reduxstore you should see a user in your state named super admin with rank 4 and a jwt-token.
 
-#### Step D: configure backend-settings on your Frontend
+### Step D: configure backend-settings on your Frontend
 
 1. Be sure you are logged in as super-admin when proceeding with the configuration!!
 2. Click admin-button and you are redirected to the admin-page
@@ -85,7 +79,7 @@ If you are going to use this gmail address to send verification emails, you also
 14. After creating a new account, log back into the Super-Admin, and in the Admin Panel, give the user a rank.
 15. Log back into the newly created account. You should now be able to access the calendar and see your test events.
 
-#### Step E: Deploying the Backend to Heroku or other production environment.
+### Step E: Deploying the Backend to Heroku or other production environment
 
 Note: We have not actually deployed to Heroku yet, but we have theorized what steps should be taken.
 
@@ -97,11 +91,11 @@ Note: We have not actually deployed to Heroku yet, but we have theorized what st
 6. Add another config variable with key SAPASSWORD and value a password that you want to use for the admin.
 7. After saving both config variables, you can git push your app to Heroku.
 8. Change the Frontend so that it connects to Heroku instead of localhost:4000.
-8. Follow the configuration steps listed in step D, except log in with the SUPERADMIN and SAPASSWORD values.
-9. There should be no "your@email.com" account. You can make sure there is not in the Admin Tools.
+9. Follow the configuration steps listed in step D, except log in with the SUPERADMIN and SAPASSWORD values.
+10. There should be no "your@email.com" account. You can make sure there is not in the Admin Tools.
    If a "your@email.com" address is created, change it's rank to 0 (unauthorized)!
 
-### Ranks: Users are divided into 5 ranks:
+## Ranks: Users are divided into 5 ranks
 
 0. Unauthorized. All newly created accounts have this rank. They have no rights until a teacher or admin promotes them.
 1. Student. These users can see the calendar and the calendar events.
@@ -110,36 +104,38 @@ Note: We have not actually deployed to Heroku yet, but we have theorized what st
 4. Admin. These users can promote and demote everyone, including fellow Admins, so beware!
    These users can also change the configuration settings through the Admin Panel.
 
-### Super Admin
+## Super Admin
 
 There is also a super admin. This email address and password are specified in process.env.SUPERADMIN and process.env.SAPASSWORD in auth/superAdmin.js. This super admin does two things:
 
 1. Every time the Backend is started, it checks if a user exists with email process.env.SUPERADMIN. If no such user exists, a new user is created with email process.env.SUPERADMIN, password process.env.SAPASSWORD, and rank 4.
 2. Every time someone logs in, if their email is identical to process.env.SUPERADMIN, and their rank is less than 4, their rank is increased to 4. This prevents others from taking their rank away.
 
-##### Note that if you change the process.env.SUPERADMIN and process.env.SAPASSWORD settings, this does not remove the admin accounts that are already created. You still need to demote those old admin accounts manually.
+**Note that if you change the process.env.SUPERADMIN and process.env.SAPASSWORD settings, this does not remove the admin accounts that are already created. You still need to demote those old admin accounts manually.**
 
-### Below are the areas which you can start working on, once the app is running:
+## Below are the areas which you can start working on, once the app is running
 
 1. When admin logs in initially, the router "/events/:year/:month/:day" in the file calendar/index.js should not be called. It should be called only once the calendar id is setup.
 
-2. On the admin page, under the "Setup email verification" the password at the moment is the passowrd of the user's  email    id. 
-- We need the email id and the passowrd of the user to send the verification mail but it would be ridiculous to ask the user for their password as well. 
+2. On the admin page, under the "Setup email verification" the password at the moment is the passowrd of the user's email id.
+
+- We need the email id and the passowrd of the user to send the verification mail but it would be ridiculous to ask the user for their password as well.
 - One way to get the password of the user is by adding a password textfield in the user signup and store the encrypted password(use bcrypt for encryption) in the configuration model in the backend with key as send_password.
 - To send the verification mail, you will need to bcrypt the user's password.
 - Start with removing the password field in the admin page under setup mail verification.
 
-3 Remove the text under Setup Calendar in the container where it says "Copy paste the following calendar id".
+3. Remove the text under Setup Calendar in the container where it says "Copy paste the following calendar id".
 
 ### Future groups, you are of course welcome to come up with your own tweaks and features to implement, but here are a list of ideas/hints that we would have integrated, had we more time:
 
 1. Setup proper routing on the Frontend:
+
 - Only displaying the user email and rank to teachers and admins where they can change rank.
 - Make a list of unauthorized users appear after logging in as a teacher(rank 3). At the moment teachers do not have a button to change the rank of the users. To do that, once the list of unauthorized users are shown, the teacher clicks on a user where he can change the rank. To implement rank, provide 2 buttons(rank 1 and 2). The teacher can decide the rank of the user. Store the rank of the corresponding user in the database. There is some grey area here, and you are free to take any approach suitable to you.
 
 2. Setup proper .css styling on the Frontend.
 
-3. In the backend, if the send email credentials are sent incorrectly, it should properly throw an error while trying to send an email, and return an Internal Server Error to the Frontend. Currently, the Frontend receives a message that the verification email has been sent. 
+3. In the backend, if the send email credentials are sent incorrectly, it should properly throw an error while trying to send an email, and return an Internal Server Error to the Frontend. Currently, the Frontend receives a message that the verification email has been sent.
 
 4. Implement "Forgot my password" functionality on Backend and Frontend, through email verification.
 
