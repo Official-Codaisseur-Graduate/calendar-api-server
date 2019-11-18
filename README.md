@@ -67,7 +67,7 @@ If you forgot your service account email, which is not the same as the email you
 4. Copy the (very long) private_key and paste it in the private_key box under set-up configuration.
    Be sure to copy everything between the quotation marks, including begin and end of private key and all \n entries.
 5. Enter the password from the super-admin (secret) and click submit configuration
-6. Go one page back, and then click the admin-button again to refresh the page.
+6. Open your console log, you should see message: "Google API configuration updated"
 7. To do the initials setup for the calendar id, go to calendar.google.com with your newly created gmail account and click on setting of the account like you did for step A.12. Copy the agenda id at the bottom of the page and paste it in the calendar id box in the admin page. 
 8. Enter the password from the super-admin (secret) and click submit calendar ID.
 9. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
