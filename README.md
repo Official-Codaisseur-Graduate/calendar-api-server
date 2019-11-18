@@ -117,6 +117,11 @@ There is also a super admin. This email address and password are specified in pr
 1. Every time the Backend is started, it checks if a user exists with email process.env.SUPERADMIN. If no such user exists, a new user is created with email process.env.SUPERADMIN, password process.env.SAPASSWORD, and rank 4.
 2. Every time someone logs in, if their email is identical to process.env.SUPERADMIN, and their rank is less than 4, their rank is increased to 4. This prevents others from taking their rank away.
 
+
+## Libraries used in back-end
+- Nodemailer: In this App, we are dealing with mail through google account. We have used nodemailer for sending the mail to mail-account. Go through for nodemailer in details https://nodemailer.com/about.
+
+
 ##### Note that if you change the process.env.SUPERADMIN and process.env.SAPASSWORD settings, this does not remove the admin accounts that are already created. You still need to demote those old admin accounts manually.
 
 ### Below are the areas which you can start working on, once the app is running:
