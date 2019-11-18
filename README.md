@@ -154,3 +154,9 @@ There is also a super admin. This email address and password are specified in pr
 11. In the backend, add an email notification to a specific email address whenever a new account completes registration. This target email address should be configured and stored in the database, so there should be a "Set notification email" functionality on Backend and Frontend, similar to setting the Google API settings.
 
 12. Integrate the project with the Codaisseur Readest App. Talk to Wouter de Vos for details.
+
+### Special thanks to
+
+- **[Thels](https://github.com/ThelsK)**
+- **[Patty Ouwehand](https://github.com/pattyouwehand)**
+- **[Gijs Maas](https://github.com/gijsmaas82)**
