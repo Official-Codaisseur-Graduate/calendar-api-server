@@ -69,7 +69,7 @@ If you forgot your service account email, which is not the same as the email you
 5. Enter the password from the super-admin (secret) and click submit configuration
 6. Open your console log, you should see message: "Google API configuration updated"
 7. To do the setup for the calendar id, go to calendar.google.com Go to your calendar settings and copy the agenda id at the bottom of the page and paste it in the calendar id box in the admin page. 
-8. Enter the password from the super-admin (secret) and click submit calendar ID. You should see in your console message: "Google API configuration updated"
+8. Enter the password from the super-admin (secret) and click submit calendar ID. You should see in your console message: "Calendar ID updated"
 9. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
 10. Enter the password from the super-admin (secret) and click submit mail verification.
 11. Make sure that everything is stored in your database on the configuration table.
