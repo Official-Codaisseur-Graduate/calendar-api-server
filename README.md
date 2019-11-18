@@ -61,22 +61,21 @@ If you forgot your service account email, which is not the same as the email you
 
 ### Step D: configure backend-settings on your Frontend
 
-1. Be sure you are logged in as super-admin when proceeding with the configuration!!
-2. Click admin-button and you are redirected to the admin-page
-3. For the Set-up configuration open your json-file you stored earlier in a text-editor.
-4. Copy client_email to the emailbox under set-up configuration.
-5. Copy the (very long) private_key and paste it in the private_key box under set-up configuration.
+1. Click admin-button and you are redirected to the admin-page
+2. For the Set-up configuration open your json-file you stored earlier in a text-editor.
+3. Copy client_email to the emailbox under set-up configuration.
+4. Copy the (very long) private_key and paste it in the private_key box under set-up configuration.
    Be sure to copy everything between the quotation marks, including begin and end of private key and all \n entries.
-6. Enter the password from the super-admin (secret) and click submit configuration
-7. Go one page back, and then click the admin-button again to refresh the page.
-8. To do the initials setup for the calendar id, go to calendar.google.com with your newly created gmail account and click on setting of the account like you did for step A.12. Copy the agenda id at the bottom of the page and paste it in the calendar id box in the admin page. 
-9. Enter the password from the super-admin (secret) and click submit calendar ID.
-10. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
-11. Enter the password from the super-admin (secret) and click submit mail verification.
-12. Make sure that everything is stored in your database on the configuration table.
-13. Test everything by registering a new account. You should receive a verification email. Be sure to check your spamfolder.
-14. After creating a new account, log back into the Super-Admin, and in the Admin Panel, give the user a rank.
-15. Log back into the newly created account. You should now be able to access the calendar and see your test events.
+5. Enter the password from the super-admin (secret) and click submit configuration
+6. Go one page back, and then click the admin-button again to refresh the page.
+7. To do the initials setup for the calendar id, go to calendar.google.com with your newly created gmail account and click on setting of the account like you did for step A.12. Copy the agenda id at the bottom of the page and paste it in the calendar id box in the admin page. 
+8. Enter the password from the super-admin (secret) and click submit calendar ID.
+9. Under setup mail verification, provide the email address and the password of the Gmail address that you created.
+10. Enter the password from the super-admin (secret) and click submit mail verification.
+11. Make sure that everything is stored in your database on the configuration table.
+12. Test everything by registering a new account. You should receive a verification email. Be sure to check your spamfolder.
+13. After creating a new account, log back into the Super-Admin, and in the Admin Panel, give the user a rank.
+14. Log back into the newly created account. You should now be able to access the calendar and see your test events.
 
 ### Step E: Deploying the Backend to Heroku or other production environment
 
