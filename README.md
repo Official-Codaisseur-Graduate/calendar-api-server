@@ -113,6 +113,10 @@ There is also a super admin. This email address and password are specified in pr
 
 **Note that if you change the process.env.SUPERADMIN and process.env.SAPASSWORD settings, this does not remove the admin accounts that are already created. You still need to demote those old admin accounts manually.**
 
+## Libraries used in back-end
+
+- Nodemailer: In this App, we are dealing with mail through google account. We have used nodemailer for sending the mail to mail-account. Go through for nodemailer in details https://nodemailer.com/about
+
 ## Below are the areas which you can start working on, once the app is running
 
 1. When admin logs in initially, the router "/events/:year/:month/:day" in the file calendar/index.js should not be called. It should be called only once the calendar id is setup.
@@ -137,13 +141,13 @@ There is also a super admin. This email address and password are specified in pr
 
 3. In the backend, if the send email credentials are sent incorrectly, it should properly throw an error while trying to send an email, and return an Internal Server Error to the Frontend. Currently, the Frontend receives a message that the verification email has been sent.
 
-4. Implement "Forgot my password" functionality on Backend and Frontend, through email verification.
+4. Implement "Change my email" functionality on Backend and Frontend, with email verification step.
 
-5. Implement "Change my password" functionality on Backend and Frontend.
+5. Implement "Change my display name" functionality on Backend and Frontend.
 
-6. Implement "Change my email" functionality on Backend and Frontend, with email verification step.
+6. Implement key checking for the google api’s
 
-7. Implement "Change my display name" functionality on Backend and Frontend.
+7. Implement notification emails
 
 8. In the backend, move the baseUrl from a hardcoded string in the URL to a configuration option stored in the database. Add a "set frontend url" functionality on Backend and Frontend, similar to setting the Google API settings.
 
