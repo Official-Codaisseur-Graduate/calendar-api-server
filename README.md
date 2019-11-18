@@ -58,7 +58,6 @@ If you forgot your service account email, which is not the same as the email you
 3. type npm start to start the app and you should see a login-screen
 4. you should be able to log in with Email: "your@email.com" and password="secret"
 5. After logging in you should see the calendar
-6. If you check the reduxstore you should see a user in your state named super admin with rank 4 and a jwt-token.
 
 ### Step D: configure backend-settings on your Frontend
 
