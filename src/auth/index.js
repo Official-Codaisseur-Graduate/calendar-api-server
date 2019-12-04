@@ -92,7 +92,7 @@ router.post('/register', getEmailCredentials, async (req, res) => {
   try {
     if (!checkEmail(req.body.email)) {
       return res.status(400).send({
-        message: "'email' must be an email address."
+        message: 'Mail must be in format 123@abc.com.'
       });
     }
 
@@ -283,8 +283,12 @@ router.post('/forgot-password', getEmailCredentials, async (req, res) => {
         email: req.body.email
       }
     });
-    if (!user) {
-      return res.status(400).send({
+    if (!checkEmail(req.body.email)) {
+      return res.send({
+        message: 'This is not a valid email format.'
+      });
+    } else if (!user) {
+      return res.send({
         message: 'Email address not found'
       });
     } else {
