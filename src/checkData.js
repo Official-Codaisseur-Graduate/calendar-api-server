@@ -1,49 +1,67 @@
 const checkDate = date => {
   try {
-    return new Date(date) && true
+    return new Date(date) && true;
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
 
 const checkEmail = email => {
   try {
-    return typeof email === "string" &&
-      email.indexOf("@") > 0 && email.indexOf("@") < email.length - 1
+    return (
+      typeof email === 'string' &&
+      email.indexOf('@') > 0 &&
+      email.indexOf('@') < email.length - 1
+    );
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
 
 // minValue and maxValue are optional parameters.
 const checkInteger = (integer, minValue, maxValue) => {
   try {
-    return Number.isInteger(integer) &&
+    return (
+      Number.isInteger(integer) &&
       (!minValue || integer >= minValue) &&
       (!maxValue || integer <= maxValue)
+    );
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
 
 // minLength and maxLength are optional parameters.
 const checkString = (string, minLength, maxLength) => {
   try {
-    return typeof string === "string" &&
+    return (
+      typeof string === 'string' &&
       (!minLength || string.length >= minLength) &&
       (!maxLength || string.length <= maxLength)
+    );
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
+const checkPrivateKey = string => {
+  try {
+    const start = string.includes('BEGIN PRIVATE KEY');
+    const end = string.includes('END PRIVATE KEY');
+    if (start && end) {
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+};
 
 const checkUrl = url => {
   try {
-    return new URL(url) && true
+    return new URL(url) && true;
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
 
 module.exports = {
   checkDate,
@@ -51,4 +69,5 @@ module.exports = {
   checkInteger,
   checkString,
   checkUrl,
-}
+  checkPrivateKey
+};
