@@ -6,114 +6,131 @@ const { getCalendar, getCalendarId } = require('./middleware');
 const router = new Router();
 
 router.get('/calendars', getCalendar, async (req, res) => {
-  try {
-    if (req.user.rank < 4) {
-      return res.status(403).send({
-        message: 'Only admin users can see all calendar IDs.'
-      });
-    }
-
-    const calendar_id_entry = await Config.findOne({
-      where: { key: 'calendar_id' }
-    });
-
-    req.calendar.calendarList.list(
-      {
-        showDeleted: true,
-        showHidden: true
-      },
-
-      (error, result) => {
-        if (error) {
-          console.error(error);
-          return res.status(500).send({
-            message: 'Internal server error.'
-          });
+    try {
+        if (req.user.rank < 4) {
+            return res.status(403).send({
+                message: 'Only admin users can see all calendar IDs.',
+            });
         }
 
-        res.send({
-          events: result.data.items.map(calendar => {
-            if (calendar_id_entry && calendar.id === calendar_id_entry.data) {
-              return {
-                id: calendar.id,
-                summary: calendar.summary,
-                selected: true
-              };
-            }
-            return {
-              id: calendar.id,
-              summary: calendar.summary
-            };
-          })
+        const calendar_id_entry = await Config.findOne({
+            where: { key: 'calendar_id' },
         });
-      }
-    );
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send({
-      message: 'Internal server error.'
-    });
-  }
+
+        req.calendar.calendarList.list(
+            {
+                showDeleted: true,
+                showHidden: true,
+            },
+
+            (error, result) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).send({
+                        message: 'Internal server error.',
+                    });
+                }
+
+                res.send({
+                    events: result.data.items.map(calendar => {
+                        if (
+                            calendar_id_entry &&
+                            calendar.id === calendar_id_entry.data
+                        ) {
+                            return {
+                                id: calendar.id,
+                                summary: calendar.summary,
+                                selected: true,
+                            };
+                        }
+                        return {
+                            id: calendar.id,
+                            summary: calendar.summary,
+                        };
+                    }),
+                });
+            }
+        );
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({
+            message: 'Internal server error.',
+        });
+    }
 });
 
 /* this endpoint shows all the events of the current date if the calendar Id is setup
    Initially  while setting up, it will throw an error because the calendar Id is not setup
 */
 router.get(
-  '/events/:year/:month/:day',
-  auth,
-  getCalendar,
-  getCalendarId,
-  (req, res) => {
-    try {
-      if (!req.user.rank) {
-        return res.status(403).send({
-          message: 'Only authorized users can load calendar data.'
-        });
-      }
+    '/events/:year/:month/',
+    auth,
+    getCalendar,
+    getCalendarId,
+    async (req, res) => {
+        try {
+            if (!req.user.rank) {
+                return res.status(403).send({
+                    message: 'Only authorized users can load calendar data.',
+                });
+            }
 
-      const startDate = new Date(
-        parseInt(req.params.year),
-        parseInt(req.params.month) - 1,
-        parseInt(req.params.day),
-        0,
-        0,
-        0,
-        0 // Set time of day to start of day.
-      );
-      const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + 1);
+            /*             const startDate = new Date(
+                parseInt(req.params.year),
+                parseInt(req.params.month) - 1,
+                parseInt(req.params.day),
+                0,
+                0,
+                0,
+                0 // Set time of day to start of day.
+            );
 
-      req.calendar.events.list(
-        {
-          calendarId: req.calendarId,
-          timeMin: startDate.toISOString(),
-          timeMax: endDate.toISOString(),
-          singleEvents: true,
-          orderBy: 'starttime'
-        },
+            const endDate = new Date(startDate); */
+            /*        endDate.setDate(endDate.getDate() + 1); */
+            var date = new Date();
 
-        (error, result) => {
-          if (error) {
+            var firstDay = new Date(
+                parseInt(req.params.year),
+                parseInt(req.params.month) - 1,
+                1,
+                1
+            );
+            var lastDay = new Date(
+                parseInt(req.params.year),
+                parseInt(req.params.month),
+                1
+            );
+            req.calendar.events.list(
+                {
+                    calendarId: req.calendarId,
+                    timeMin: firstDay.toISOString(),
+                    timeMax: lastDay.toISOString(),
+                    singleEvents: true,
+                    orderBy: 'starttime',
+                },
+
+                (error, result) => {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).send({
+                            message: 'Error',
+                        });
+                    }
+
+                    res.send({
+                        events: result.data.items.map(event => ({
+                            ...event,
+                        })),
+                    });
+                }
+            );
+        } catch (error) {
             console.error(error);
             return res.status(500).send({
-              message: 'Error'
+                message: 'error Check.',
             });
-          }
-          res.send({
-            events: result.data.items.map(event => ({
-              ...event
-            }))
-          });
         }
-      );
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({
-        message: 'error Check.'
-      });
     }
-  }
 );
 
 module.exports = router;
