@@ -91,15 +91,18 @@ router.get(
 
             var firstDay = new Date(
                 parseInt(req.params.year),
-                parseInt(req.params.month) - 1,
+                parseInt(req.params.month),
                 1,
                 1
             );
             var lastDay = new Date(
                 parseInt(req.params.year),
-                parseInt(req.params.month),
+                parseInt(req.params.month) + 1,
                 1
             );
+            console.log('start', firstDay);
+            console.log('end', lastDay);
+
             req.calendar.events.list(
                 {
                     calendarId: req.calendarId,
