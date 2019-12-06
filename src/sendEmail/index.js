@@ -1,22 +1,21 @@
-const baseUrl = process.env.BASEURL || "http://localhost:3000"
-
+const baseUrl = process.env.BASEURL || 'http://localhost:3000';
 
 //
 
 const sendEmail = async (transport, to, subject, text, html) => {
-
-  await transport.sendMail({ to, subject, text, html },
-    function (error, result) {
-      if (error) {
-        console.error(error)
-        throw "An error occurred trying to send an email."
-      }
+  await transport.sendMail({ to, subject, text, html }, function(
+    error,
+    result
+  ) {
+    if (error) {
+      console.error(error);
+      throw 'An error occurred trying to send an email.';
     }
-  )
-}
+  });
+};
 
 const sendRegisterEmail = async (transport, to, validation) => {
-  const subject = `Codaisseur Calendar account registration.`
+  const subject = `Codaisseur Calendar account registration.`;
 
   const text = `Hello,
 
@@ -26,7 +25,7 @@ const sendRegisterEmail = async (transport, to, validation) => {
     To continue the registration process, follow the link below:
     ${baseUrl}/validate/${validation}
 
-    Thank you for registering.`
+    Thank you for registering.`;
 
   const html = `<h3>Hello,</h3>
 
@@ -36,13 +35,13 @@ const sendRegisterEmail = async (transport, to, validation) => {
     <p>To continue the registration process, follow the link below:</p>
     <a href="${baseUrl}/validate/${validation}">Continue registration</a>
       
-    <p>Thank you for registering.</p>`
+    <p>Thank you for registering.</p>`;
 
-  await sendEmail(transport, to, subject, text, html)
-}
+  await sendEmail(transport, to, subject, text, html);
+};
 
 const alreadyRegisteredEmail = async (transport, to) => {
-  const subject = `Codaisseur Calendar account registration.`
+  const subject = `Codaisseur Calendar account registration.`;
 
   const text = `Hello,
 
@@ -54,7 +53,7 @@ const alreadyRegisteredEmail = async (transport, to) => {
     If you have forgotten your password, reset it with the link below:
     ${baseUrl}/resetpassword/${validation}/${to}
 
-    Thank you.`
+    Thank you.`;
 
   const html = `<h3>Hello,</h3>
 
@@ -66,14 +65,13 @@ const alreadyRegisteredEmail = async (transport, to) => {
     <p>If you forgot your password, reset it with the link below:</p>
     <a href="${baseUrl}/resetpassword/${validation}/${to}">Reset your password</a>
   
-    <p>Thank you.</p>`
+    <p>Thank you.</p>`;
 
-  await sendEmail(transport, to, subject, text, html)
-}
-
+  await sendEmail(transport, to, subject, text, html);
+};
 
 const ResetPassword = async (transport, to, validation) => {
-  const subject = `Codaisseur Calendar reset password.`
+  const subject = `Codaisseur Calendar reset password.`;
 
   const text = `Dear,
 
@@ -85,7 +83,7 @@ const ResetPassword = async (transport, to, validation) => {
 
     ${baseUrl}/resetpassword/${validation}/${to}
 
-    Thank you.`
+    Thank you.`;
 
   const html = `<h3>Dear,</h3>
     <p>${to}</p>
@@ -95,14 +93,38 @@ const ResetPassword = async (transport, to, validation) => {
     <p>kindly use this link below to reset your password:</p>
     <a href="${baseUrl}/resetpassword/${validation}/${to}">Click here to reset your password</a>
   
-    <p>Thank you.</p>`
+    <p>Thank you.</p>`;
 
-  await sendEmail(transport, to, subject, text, html)
-}
+  await sendEmail(transport, to, subject, text, html);
+};
 
+const beAssistantRequest = async (transport, to, event, user) => {
+  console.log('MESSAGE SENT');
+  const subject = `Codaisseur Calendar Assistant Request.`;
+
+  const text = `Hello,
+
+  I am ${user.name} and my e-mail adress is ${user.email}.
+
+  I would like to assist in ${event.title} on ${event.start}.
+
+  Please let me know if thats possible. Thanks.`;
+
+  const html = `<h3>Hello,</h3>
+
+    <p>I am ${user.name} and my e-mail adress is ${user.email}.</p>
+
+    <p>I would like to assist in ${event.title} on ${event.start}.</p>
+
+    <p>Please let me know if that's possible. Thanks.</p>`;
+
+  await sendEmail(transport, to, subject, text, html);
+  console.log('MESSAGE SENT');
+};
 
 module.exports = {
   sendRegisterEmail,
   alreadyRegisteredEmail,
-  ResetPassword
-}
+  ResetPassword,
+  beAssistantRequest
+};
