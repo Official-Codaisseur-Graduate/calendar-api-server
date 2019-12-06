@@ -3,7 +3,8 @@ const Sequelize = require('sequelize');
 
 const User = require('./model');
 const { checkInteger } = require('../checkData');
-
+const { beAssistantRequest } = require('../sendEmail/index');
+const { getEmailCredentials } = require('../sendEmail/middleware');
 const router = new Router();
 
 router.get('/users', async (req, res) => {
@@ -119,6 +120,29 @@ router.patch('/editProfile', async (req, res, next) => {
     res.status(200).send({
       message: 'Your profile is updated!',
       updatedUser
+    });
+  }
+});
+
+router.post('/assistant-request', getEmailCredentials, async (req, res) => {
+  const user = req.user;
+  console.log('REQ.TRANSPORT: ', req.transport);
+  console.log('REQ BODY', req.body);
+  try {
+    await beAssistantRequest(
+      req.transport,
+      req.body.teacherEmail,
+      req.body.event,
+      user
+    );
+    return res.send({
+      message:
+        'Request email sent. Now wait for a teacher to accept your request.'
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      message: 'Internal server error.'
     });
   }
 });
