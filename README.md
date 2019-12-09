@@ -1,6 +1,8 @@
-# The Codaisseur Academy Calendar
+# The Codaisseur Academy Calendar - Server
 
-The Codaisseur Academy Calendar is a platform for Codaisseur's students, teacher's assistants and teachers. Here you can view all of Codaisseur's events, which teacher is teaching what class and what lesson on a given day. You can also see special events here, for example __Taste of Code__ events or __Demo nights__.
+**The Codaisseur Academy Calendar is a platform for Codaisseur's students, teacher's assistants and teachers.**
+
+Here you can view all of Codaisseur's events, which teacher is teaching what class and what lesson on a given day. You can also see special events here, for example __Taste of Code__ events or __Demo nights__.
 
 Also, if you are given the role of an assistant you can volunteer on any event to assist a teacher in their lessons.
 
@@ -22,3 +24,10 @@ You will find step by step instructions on setting up the server in ["Getting st
 - **[Thels](https://github.com/ThelsK)**
 - **[Patty Ouwehand](https://github.com/pattyouwehand)**
 - **[Gijs Maas](https://github.com/gijsmaas82)**
+- **[Remzi](https://github.com/Remzi1993)**
+- **[Akash Chandra](https://github.com/AkashChandra92)**
+- **[Panthari Panthong](https://github.com/Panthari-Panthong)**
+- **[soniasoni04](https://github.com/soniasoni04)**
+- **[gijsmaas82](https://github.com/gijsmaas82)**
+- **[Simona Winnekes](https://github.com/winnekes)**
+- **[Chrysostomos Krikonis](https://github.com/krik-chry)**
