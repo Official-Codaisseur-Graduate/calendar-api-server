@@ -12,16 +12,16 @@ const { checkSuperAdmin } = require('./auth/superAdmin');
 
 const app = express();
 app.use(
-  cors(),
-  bodyParser.json(),
-  authRouter,
-  authMiddleware, // authentication happens for every routes(endpoints)
-  userRouter,
-  configRouter,
-  calendarRouter
+    cors(),
+    bodyParser.json(),
+    authRouter,
+    authMiddleware,
+    userRouter,
+    configRouter,
+    calendarRouter
 );
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`Listening to :${port}`)); // starting the app on port 4000
+app.listen(port, () => console.log(`Listening to :${port}`));
 
-databaseSync().then(checkSuperAdmin); // creating a superadmin when the  database is created
+databaseSync().then(checkSuperAdmin);

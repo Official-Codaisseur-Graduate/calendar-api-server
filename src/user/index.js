@@ -17,7 +17,6 @@ router.get('/users', async (req, res) => {
             users,
         });
     } catch (error) {
-        console.error(error);
         return res.status(500).send({
             message: 'Internal server error.',
         });
@@ -88,7 +87,6 @@ router.put('/userrank/:id', async (req, res) => {
             },
         });
     } catch (error) {
-        console.error(error);
         return res.status(500).send({
             message: 'Internal server error.',
         });
@@ -124,8 +122,7 @@ router.patch('/editProfile', async (req, res, next) => {
 
 router.post('/assistant-request', getEmailCredentials, async (req, res) => {
     const user = req.user;
-    console.log('REQ.TRANSPORT: ', req.transport);
-    console.log('REQ BODY', req.body);
+
     try {
         await beAssistantRequest(
             req.transport,
@@ -138,7 +135,6 @@ router.post('/assistant-request', getEmailCredentials, async (req, res) => {
                 'Request email sent. Now wait for a teacher to accept your request.',
         });
     } catch (error) {
-        console.error(error);
         return res.status(500).send({
             message: 'Internal server error.',
         });
