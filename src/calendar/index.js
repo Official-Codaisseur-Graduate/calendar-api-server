@@ -52,7 +52,6 @@ router.get('/calendars', getCalendar, async (req, res) => {
             }
         );
     } catch (error) {
-        console.error(error);
         return res.status(500).send({
             message: 'Internal server error.',
         });
@@ -75,46 +74,31 @@ router.get(
                 });
             }
 
-            /*             const startDate = new Date(
-                parseInt(req.params.year),
-                parseInt(req.params.month) - 1,
-                parseInt(req.params.day),
-                0,
-                0,
-                0,
-                0 // Set time of day to start of day.
-            );
-
-            const endDate = new Date(startDate); */
-            /*        endDate.setDate(endDate.getDate() + 1); */
             var date = new Date();
 
-            var firstDay = new Date(
+            var firstDayOfMonth = new Date(
                 parseInt(req.params.year),
                 parseInt(req.params.month),
                 1,
                 1
             );
-            var lastDay = new Date(
+            var lastDayOfMonth = new Date(
                 parseInt(req.params.year),
                 parseInt(req.params.month) + 1,
                 1
             );
-            console.log('start', firstDay);
-            console.log('end', lastDay);
 
             req.calendar.events.list(
                 {
                     calendarId: req.calendarId,
-                    timeMin: firstDay.toISOString(),
-                    timeMax: lastDay.toISOString(),
+                    timeMin: firstDayOfMonth.toISOString(),
+                    timeMax: lastDayOfMonth.toISOString(),
                     singleEvents: true,
                     orderBy: 'starttime',
                 },
 
                 (error, result) => {
                     if (error) {
-                        console.error(error);
                         return res.status(500).send({
                             message: 'Error',
                         });
@@ -128,7 +112,6 @@ router.get(
                 }
             );
         } catch (error) {
-            console.error(error);
             return res.status(500).send({
                 message: 'error Check.',
             });

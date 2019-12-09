@@ -1,14 +1,11 @@
 const baseUrl = process.env.BASEURL || 'http://localhost:3000';
 
-//
-
 const sendEmail = async (transport, to, subject, text, html) => {
     await transport.sendMail({ to, subject, text, html }, function(
         error,
         result
     ) {
         if (error) {
-            console.error(error);
             throw 'An error occurred trying to send an email.';
         }
     });
@@ -99,7 +96,6 @@ const ResetPassword = async (transport, to, validation) => {
 };
 
 const beAssistantRequest = async (transport, to, event, user) => {
-    console.log('MESSAGE SENT');
     const subject = `Codaisseur Calendar Assistant Request.`;
 
     const text = `Hello,
@@ -123,7 +119,6 @@ const beAssistantRequest = async (transport, to, event, user) => {
     <p>Please let me know if that's possible. Thanks.</p>`;
 
     await sendEmail(transport, to, subject, text, html);
-    console.log('MESSAGE SENT');
 };
 
 module.exports = {
