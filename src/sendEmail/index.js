@@ -1,20 +1,17 @@
 const baseUrl = process.env.BASEURL || 'http://localhost:3000';
 
 const sendEmail = async (transport, to, subject, text, html) => {
-    await transport.sendMail({ to, subject, text, html }, function(
-        error,
-        result
-    ) {
-        if (error) {
-            throw 'An error occurred trying to send an email.';
-        }
-    });
+  await transport.sendMail({ to, subject, text, html }, function(error, result) {
+    if (error) {
+      throw 'An error occurred trying to send an email.';
+    }
+  });
 };
 
 const sendRegisterEmail = async (transport, to, validation) => {
-    const subject = `Codaisseur Calendar account registration.`;
+  const subject = `Codaisseur Calendar account registration.`;
 
-    const text = `Hello,
+  const text = `Hello,
 
     A new account has been registered with email address:
     ${to}
@@ -24,23 +21,23 @@ const sendRegisterEmail = async (transport, to, validation) => {
 
     Thank you for registering.`;
 
-    const html = `<h3>Hello,</h3>
+  const html = `<h3>Hello,</h3>
 
     <p>A new account has been registered with email address:</p>
     <p>${to}</p>
-
+    
     <p>To continue the registration process, follow the link below:</p>
     <a href="${baseUrl}/validate/${validation}">Continue registration</a>
       
     <p>Thank you for registering.</p>`;
 
-    await sendEmail(transport, to, subject, text, html);
+  await sendEmail(transport, to, subject, text, html);
 };
 
 const alreadyRegisteredEmail = async (transport, to) => {
-    const subject = `Codaisseur Calendar account registration.`;
+  const subject = `Codaisseur Calendar account registration.`;
 
-    const text = `Hello,
+  const text = `Hello,
 
     An attempt was made to register an account with email address:
     ${to}
@@ -52,7 +49,7 @@ const alreadyRegisteredEmail = async (transport, to) => {
 
     Thank you.`;
 
-    const html = `<h3>Hello,</h3>
+  const html = `<h3>Hello,</h3>
 
     <p>An attempt was made to register an account with email address:</p>
     <p>${to}</p>
@@ -64,13 +61,13 @@ const alreadyRegisteredEmail = async (transport, to) => {
   
     <p>Thank you.</p>`;
 
-    await sendEmail(transport, to, subject, text, html);
+  await sendEmail(transport, to, subject, text, html);
 };
 
 const ResetPassword = async (transport, to, validation) => {
-    const subject = `Codaisseur Calendar reset password.`;
+  const subject = `Codaisseur Calendar reset password.`;
 
-    const text = `Dear,
+  const text = `Dear,
 
     ${to}
 
@@ -82,7 +79,7 @@ const ResetPassword = async (transport, to, validation) => {
 
     Thank you.`;
 
-    const html = `<h3>Dear,</h3>
+  const html = `<h3>Dear,</h3>
     <p>${to}</p>
 
     <p>You requested for a password reset,</p>
@@ -92,13 +89,13 @@ const ResetPassword = async (transport, to, validation) => {
   
     <p>Thank you.</p>`;
 
-    await sendEmail(transport, to, subject, text, html);
+  await sendEmail(transport, to, subject, text, html);
 };
 
 const beAssistantRequest = async (transport, to, event, user) => {
-    const subject = `Codaisseur Calendar Assistant Request.`;
+  const subject = `Codaisseur Calendar Assistant Request.`;
 
-    const text = `Hello,
+  const text = `Hello,
 
   I am ${user.name} and my e-mail adress is ${user.email}.
 
@@ -108,7 +105,7 @@ const beAssistantRequest = async (transport, to, event, user) => {
 
   Please let me know if thats possible. Thanks.`;
 
-    const html = `<h3>Hello,</h3>
+  const html = `<h3>Hello,</h3>
 
     <p>I am ${user.name} and my e-mail adress is ${user.email}.</p>
 
@@ -118,12 +115,12 @@ const beAssistantRequest = async (transport, to, event, user) => {
 
     <p>Please let me know if that's possible. Thanks.</p>`;
 
-    await sendEmail(transport, to, subject, text, html);
+  await sendEmail(transport, to, subject, text, html);
 };
 
 module.exports = {
-    sendRegisterEmail,
-    alreadyRegisteredEmail,
-    ResetPassword,
-    beAssistantRequest,
+  sendRegisterEmail,
+  alreadyRegisteredEmail,
+  ResetPassword,
+  beAssistantRequest
 };

@@ -1,17 +1,7 @@
-const checkDate = date => {
-  try {
-    return new Date(date) && true;
-  } catch (error) {
-    return false;
-  }
-};
-
 const checkEmail = email => {
   try {
     return (
-      typeof email === 'string' &&
-      email.indexOf('@') > 0 &&
-      email.indexOf('@') < email.length - 1
+      typeof email === 'string' && email.indexOf('@') > 0 && email.indexOf('@') < email.length - 1
     );
   } catch (error) {
     return false;
@@ -43,6 +33,7 @@ const checkString = (string, minLength, maxLength) => {
     return false;
   }
 };
+
 const checkPrivateKey = string => {
   try {
     const start = string.includes('BEGIN PRIVATE KEY');
@@ -55,19 +46,9 @@ const checkPrivateKey = string => {
   }
 };
 
-const checkUrl = url => {
-  try {
-    return new URL(url) && true;
-  } catch (error) {
-    return false;
-  }
-};
-
 module.exports = {
-  checkDate,
   checkEmail,
   checkInteger,
   checkString,
-  checkUrl,
   checkPrivateKey
 };

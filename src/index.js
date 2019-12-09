@@ -11,17 +11,18 @@ const { databaseSync } = require('./database');
 const { checkSuperAdmin } = require('./auth/superAdmin');
 
 const app = express();
+
 app.use(
-    cors(),
-    bodyParser.json(),
-    authRouter,
-    authMiddleware,
-    userRouter,
-    configRouter,
-    calendarRouter
+  cors(),
+  bodyParser.json(),
+  authRouter,
+  authMiddleware,
+  userRouter,
+  configRouter,
+  calendarRouter
 );
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`Listening to :${port}`));
+app.listen(port, () => console.log(`App listening to port :${port}`));
 
 databaseSync().then(checkSuperAdmin);
