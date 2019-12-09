@@ -55,6 +55,7 @@ const getCalendarId = async (req, res, next) => {
     const calendar_id_entry = await Config.findOne({
       where: { key: 'calendar_id' }
     });
+
     if (!calendar_id_entry || !calendar_id_entry.data) {
       return res.status(503).send({
         message: 'No Calendar ID configuration set by admin.'

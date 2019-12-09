@@ -56,9 +56,6 @@ router.get('/calendars', getCalendar, async (req, res) => {
   }
 });
 
-/* this endpoint shows all the events of the current date if the calendar Id is setup
-   Initially  while setting up, it will throw an error because the calendar Id is not setup
-*/
 router.get('/events/:year/:month/', auth, getCalendar, getCalendarId, async (req, res) => {
   try {
     if (!req.user.rank) {
@@ -66,8 +63,6 @@ router.get('/events/:year/:month/', auth, getCalendar, getCalendarId, async (req
         message: 'Only authorized users can load calendar data.'
       });
     }
-
-    var date = new Date();
 
     var firstDayOfMonth = new Date(parseInt(req.params.year), parseInt(req.params.month), 1, 1);
     var lastDayOfMonth = new Date(parseInt(req.params.year), parseInt(req.params.month) + 1, 1);

@@ -12,6 +12,7 @@ const validate = async (req, res, next) => {
     const user = await User.findOne({
       where: { validation: req.headers.validation }
     });
+
     if (!user) {
       return res.status(400).send({
         message: 'Validation code invalid or expired.',
